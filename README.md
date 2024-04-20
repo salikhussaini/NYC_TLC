@@ -8,20 +8,21 @@ This repository hosts datasets from the New York City Taxi and Limousine Commiss
 Yellow taxis have been serving New York City since 2009 and are hailed via street signals or e-hail apps like Curb or Arro. They are permitted to respond to street hails across all five boroughs.
 
 - **Data Fields**: pick-up and drop-off dates/times, locations, trip distances, itemized fares, rate types, payment types, and passenger counts.
-- **Data Dictionary**: [PDF Download](#)
+- **Data Dictionary**: [PDF Download](#https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf)
 
 ### Green Taxi Trips
 Introduced in August 2013, green taxis serve the boroughs of NYC and specific areas in Manhattan.
 
 - **Data Fields**: pick-up and drop-off dates/times, locations, trip distances, itemized fares, rate types, payment types, and passenger counts.
-- **Data Dictionary**: [PDF Download](#)
+- **Data Dictionary**: [PDF Download](#https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_green.pdf)
 
 ### For-Hire Vehicle (FHV) Data
 FHV data includes trip records from high-volume for-hire vehicle bases, community livery bases, luxury limousine bases, and black car bases.
 
 - **Data Fields**: dispatching base number, pick-up/drop-off dates/times, locations, trip distances, fare details, and more.
 - **Data Dictionary**: [PDF Download](#)
-- **High Volume Data Dictionary**: [PDF Download](#)
+- **FHV Data Dictionary**: [PDF Download](#https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_fhv.pdf)
+- **High Volume Data Dictionary**: [PDF Download](#https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_hvfhs.pdf)
 
 #### Note on Shared Rides
 Shared rides information, like Lyft Line and Uber Pool, is included if the trip was specially reserved with one of these services.
