@@ -3,8 +3,10 @@ import os
 from typing import Dict, Set, Tuple
 
 # Define data path
-DATA_PATH = "c:/Users/salik/Documents/PROJECTS/202607_TLC/NYC_TLC/data"
-output_path = "c:/Users/salik/Documents/PROJECTS/202607_TLC/NYC_TLC/metadata"
+SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
+PARENT_SCRIPT_PATH = os.path.dirname(SCRIPT_PATH)
+DATA_PATH = os.path.join(PARENT_SCRIPT_PATH, "data")
+output_path = os.path.join(PARENT_SCRIPT_PATH, "metadata")
 os.makedirs(output_path, exist_ok=True)
 
 def load_data_file(file_path: str, file_type: str = "parquet") -> pd.DataFrame:
