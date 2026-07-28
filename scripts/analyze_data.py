@@ -58,12 +58,15 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
     for file_path in data_files:
         file_name = os.path.basename(file_path)
         df = load_data_file(file_path)
-        df_base = df_base.append({
-            "file_name": file_name,
-            "file_path": file_path,
-            "row_count": df.shape[0],
-            "column_count": df.shape[1]
-        }, ignore_index=True)
+        df_temp = pd.DataFrame(
+            {
+                "file_name": [file_name],
+                "file_path": [file_path],
+                "row_count": [df.shape[0]],
+                "column_count": [df.shape[1]]
+            }
+        )
+        df_base = pd.concat([df_base, df_temp], ignore_index=True)
     return df_base
 
 def main():
