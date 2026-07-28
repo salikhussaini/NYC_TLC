@@ -72,7 +72,8 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
 def main():
     # Analyze 
     df_base = analyze_data_folder(DATA_PATH)
-
+    # sort for ease of read
+    df_base = df_base.sort_values('file_name')
     # export csv
     output_name = os.path.join(output_path, "data_column_and_row_check.csv")
     df_base.to_csv(output_name, index=False)
