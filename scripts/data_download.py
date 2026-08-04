@@ -4,11 +4,13 @@ import threading
 import time
 import random
 from datetime import datetime
+import sys
+import logging
+import os
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import os
 
 # Base URL for NYC TLC trip data
 BASE = "https://d37ci6vzurychx.cloudfront.net/trip-data"
@@ -23,12 +25,33 @@ parent_dir = os.path.dirname(script_dir)
 OUTPUT = Path(parent_dir) / "data"
 OUTPUT.mkdir(exist_ok=True)
 
+# create logs directory
+LOGS_DIR = Path(parent_dir) / "logs"
+LOGS_DIR.mkdir(exist_ok=True)
+
+# -----------------------------
+# Logging Setup
+# -----------------------------
+log_file = LOGS_DIR / f"download_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 # -----------------------------
 # Configuration
 # -----------------------------
 MAX_WORKERS = 4              # Conservative
 REQUESTS_PER_SECOND = 2      # Global limit
-TIMEOUT = 120
+TIMEOUT = 30                 # Reduced from 120 to prevent long hangs
+MAX_RETRIES = 3              # Reduced from 5 to fail faster
 
 # -----------------------------
 # Global Rate Limiter
@@ -57,8 +80,8 @@ limiter = RateLimiter(REQUESTS_PER_SECOND)
 session = requests.Session()
 
 retry = Retry(
-    total=5,
-    backoff_factor=2,
+    total=MAX_RETRIES,
+    backoff_factor=1,
     status_forcelist=[429, 500, 502, 503, 504],
     allowed_methods=["GET"],
     respect_retry_after_header=True,
@@ -81,8 +104,11 @@ def download(url):
     outfile = OUTPUT / filename
 
     if outfile.exists():
+        logger.info(f"Skipped (exists): {filename}")
         return
 
+    logger.info(f"Attempting: {filename}")
+    
     limiter.wait()
 
     # Small random delay to avoid synchronized requests
@@ -92,6 +118,7 @@ def download(url):
         with session.get(url, stream=True, timeout=TIMEOUT) as r:
 
             if r.status_code in (404, 403):
+                logger.warning(f"Skipped (not found): {filename}")
                 return
 
             r.raise_for_status()
@@ -101,10 +128,10 @@ def download(url):
                     if chunk:
                         f.write(chunk)
 
-        print(f"Downloaded: {filename}")
+        logger.info(f"Downloaded: {filename}")
 
     except Exception as e:
-        print(f"Failed: {filename} ({e})")
+        logger.error(f"Failed: {filename} ({type(e).__name__}: {e})")
 
 # -----------------------------
 # Build URL List
@@ -128,7 +155,21 @@ for dataset in ["yellow", "green", "fhv", "fhvhv"]:
 # -----------------------------
 # Download
 # -----------------------------
-with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
-    list(pool.map(download, urls))
+logger.info(f"Starting download of {len(urls)} files...")
 
-print("Finished.")
+try:
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        # Use map with timeout to prevent infinite hangs
+        # Each file gets TIMEOUT + overhead, multiply by max possible retries
+        results = pool.map(download, urls, timeout=TIMEOUT * (MAX_RETRIES + 2))
+        # Consume the iterator to trigger execution
+        list(results)
+except TimeoutError as e:
+    logger.error(f"Download timed out after {TIMEOUT * (MAX_RETRIES + 2)}s")
+    logger.warning("Some files may not have completed.")
+except KeyboardInterrupt:
+    logger.warning("Download interrupted by user.")
+except Exception as e:
+    logger.error(f"{type(e).__name__}: {e}")
+
+logger.info("Finished.")
