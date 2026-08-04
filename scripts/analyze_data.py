@@ -31,7 +31,7 @@ def load_data_file(file_path: str, file_type: str = "parquet") -> pd.DataFrame:
 
 def crawl_folder(folder_path: str) -> list:
     """
-    Crawl a folder and return a list of all files.
+    Crawl a folder and return a list of all files using multi-threading.
     
     Args:
         folder_path: Path to the folder
@@ -40,9 +40,41 @@ def crawl_folder(folder_path: str) -> list:
         List of file paths
     """
     file_list = []
-    for root, _, files in os.walk(folder_path):
-        for file in files:
-            file_list.append(os.path.join(root, file))
+    
+    def walk_directory(directory: str) -> list:
+        """Walk a single directory and return file paths."""
+        files = []
+        try:
+            for item in os.listdir(directory):
+                item_path = os.path.join(directory, item)
+                if os.path.isfile(item_path):
+                    files.append(item_path)
+                elif os.path.isdir(item_path):
+                    files.extend(walk_directory(item_path))
+        except PermissionError:
+            pass
+        return files
+    
+    # Use multi-threading for directory traversal
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        # Get immediate subdirectories to parallelize
+        try:
+            root_items = os.listdir(folder_path)
+            futures = {}
+            
+            for item in root_items:
+                item_path = os.path.join(folder_path, item)
+                if os.path.isdir(item_path):
+                    futures[executor.submit(walk_directory, item_path)] = item_path
+                elif os.path.isfile(item_path):
+                    file_list.append(item_path)
+            
+            # Collect results as they complete
+            for future in as_completed(futures):
+                file_list.extend(future.result())
+        except Exception as e:
+            print(f"Error crawling folder: {e}")
+    
     return file_list
 
 def analyze_data_folder(folder_path: str) -> pd.DataFrame:
@@ -57,6 +89,7 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
         DataFrame with columns ["file_name", "file_path", "row_count", "column_count"]
     """
     data_files = crawl_folder(folder_path)
+    data_files = data_files[:50]
     df_base = pd.DataFrame(columns=["file_name", "file_path", "row_count", "column_count"])
     
     def process_file(file_path: str) -> pd.DataFrame:
@@ -87,7 +120,7 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
             return pd.DataFrame()
     
     # Use ThreadPoolExecutor to process files in parallel
-    with ThreadPoolExecutor(max_workers=4) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {executor.submit(process_file, file_path): file_path for file_path in data_files}
         
         for future in as_completed(futures):
