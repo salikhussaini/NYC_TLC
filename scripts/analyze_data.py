@@ -56,14 +56,26 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
     data_files = crawl_folder(folder_path)
     df_base = pd.DataFrame(columns=["file_name", "file_path", "row_count", "column_count"])
     for file_path in data_files:
+        # green_tripdata_2025-02.parquet
         file_name = os.path.basename(file_path)
+        # e.g., ["green", "tripdata", "2025-02.parquet"]
+        file_name_split = file_name.split('_')
+        data_type = file_name_split[0]
+        data_date = file_name_split[2]
+        data_date_year = data_date.split('-')[0]
+        data_date_month = data_date.split('-')[1].split('.')[0]
+
         df = load_data_file(file_path)
         df_temp = pd.DataFrame(
             {
                 "file_name": [file_name],
                 "file_path": [file_path],
+                "file_type": [data_type],
+                "data_date_year": [data_date_year],
+                "data_date_month": [data_date_month],
                 "row_count": [df.shape[0]],
                 "column_count": [df.shape[1]]
+
             }
         )
         df_base = pd.concat([df_base, df_temp], ignore_index=True)
@@ -77,6 +89,43 @@ def main():
     # export csv
     output_name = os.path.join(output_path, "data_column_and_row_check.csv")
     df_base.to_csv(output_name, index=False)
+
+    # print agg 
+    print('=' * 60)
+    print('SUMMARY STATISTICS'.center(60))
+    print('=' * 60)
+    
+    # Overall metrics
+    print('\n📊 OVERALL METRICS:')
+    print(f'  Total Files: {len(df_base)}')
+    print(f'  Total Rows: {df_base["row_count"].sum():,}')
+    print(f'  Total Columns: {df_base["column_count"].sum()}')
+    print(f'  Avg Rows per File: {df_base["row_count"].mean():,.0f}')
+    print(f'  Avg Columns per File: {df_base["column_count"].mean():.1f}')
+    
+    # By file type
+    print('\n📁 BY FILE TYPE (Row Count):')
+    agg_by_type = df_base.groupby('file_type')['row_count'].agg(['sum', 'count', 'mean'])
+    agg_by_type.columns = ['Total Rows', 'File Count', 'Avg Rows']
+    agg_by_type['Total Rows'] = agg_by_type['Total Rows'].apply(lambda x: f'{x:,}')
+    agg_by_type['Avg Rows'] = agg_by_type['Avg Rows'].apply(lambda x: f'{x:,.0f}')
+    print(agg_by_type.to_string())
+    
+    # By year
+    print('\n📅 BY YEAR (Row Count):')
+    agg_by_year = df_base.groupby('data_date_year')['row_count'].agg(['sum', 'count', 'mean'])
+    agg_by_year.columns = ['Total Rows', 'File Count', 'Avg Rows']
+    agg_by_year['Total Rows'] = agg_by_year['Total Rows'].apply(lambda x: f'{x:,}')
+    agg_by_year['Avg Rows'] = agg_by_year['Avg Rows'].apply(lambda x: f'{x:,.0f}')
+    print(agg_by_year.to_string())
+    
+    # By type and year
+    print('\n🔍 BY FILE TYPE & YEAR (Row Count):')
+    agg_by_type_year = df_base.groupby(['file_type', 'data_date_year'])['row_count'].sum().unstack(fill_value=0)
+    agg_by_type_year = agg_by_type_year.applymap(lambda x: f'{x:,}' if x > 0 else '-')
+    print(agg_by_type_year.to_string())
+    
+    print('\n' + '=' * 60)
 
 if __name__ == "__main__":
     main()
