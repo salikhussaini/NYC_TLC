@@ -145,7 +145,7 @@ current_month = now.month
 
 count = 0
 for dataset in ["yellow", "green", "fhv", "fhvhv"]:
-    for year in range(2010, current_year + 1):
+    for year in range(2000, current_year + 1):
         max_month = current_month if year == current_year else 12
         for month in range(1, max_month + 1):
             urls.append(
