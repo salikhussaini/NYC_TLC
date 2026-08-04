@@ -89,7 +89,6 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
         DataFrame with columns ["file_name", "file_path", "row_count", "column_count"]
     """
     data_files = crawl_folder(folder_path)
-    data_files = data_files[:100]
     df_base = pd.DataFrame(columns=["file_name", "file_path", "row_count", "column_count"])
     
     def process_file(file_path: str) -> pd.DataFrame:
@@ -172,10 +171,11 @@ def main():
     print(agg_by_year.to_string())
     
     # By type and year
-    print('\n🔍 BY FILE TYPE & YEAR (Row Count):')
-    agg_by_type_year = df_base.groupby(['file_type', 'data_date_year'])['row_count'].sum().unstack(fill_value=0)
-    agg_by_type_year = agg_by_type_year.map(lambda x: f'{x:,}' if x > 0 else '-')
-    print(agg_by_type_year.to_string())
+    print('\n🔍 BY YEAR & FILE TYPE (Row Count):')
+    agg_by_type_year = df_base.groupby(['data_date_year', 'file_type'])['row_count'].sum().unstack(fill_value=0)
+    # Format with proper alignment
+    agg_by_type_year_formatted = agg_by_type_year.map(lambda x: f'{int(x):>15,}' if x > 0 else '-'.rjust(15))
+    print(agg_by_type_year_formatted.to_string())
     
     print('\n' + '=' * 60)
 
