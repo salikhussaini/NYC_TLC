@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 from typing import Dict, Set, Tuple
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
 # Define data path
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +48,7 @@ def crawl_folder(folder_path: str) -> list:
 def analyze_data_folder(folder_path: str) -> pd.DataFrame:
     """
     Analyze all data files in a folder and return a summary DataFrame.
+    Uses multi-threading for parallel file processing.
     
     Args:
         folder_path: Path to the folder containing data files
@@ -55,30 +58,46 @@ def analyze_data_folder(folder_path: str) -> pd.DataFrame:
     """
     data_files = crawl_folder(folder_path)
     df_base = pd.DataFrame(columns=["file_name", "file_path", "row_count", "column_count"])
-    for file_path in data_files:
-        # green_tripdata_2025-02.parquet
-        file_name = os.path.basename(file_path)
-        # e.g., ["green", "tripdata", "2025-02.parquet"]
-        file_name_split = file_name.split('_')
-        data_type = file_name_split[0]
-        data_date = file_name_split[2]
-        data_date_year = data_date.split('-')[0]
-        data_date_month = data_date.split('-')[1].split('.')[0]
+    
+    def process_file(file_path: str) -> pd.DataFrame:
+        """Process a single file and return its analysis as a DataFrame."""
+        try:
+            file_name = os.path.basename(file_path)
+            file_name_split = file_name.split('_')
+            data_type = file_name_split[0]
+            data_date = file_name_split[2]
+            data_date_year = data_date.split('-')[0]
+            data_date_month = data_date.split('-')[1].split('.')[0]
 
-        df = load_data_file(file_path)
-        df_temp = pd.DataFrame(
-            {
-                "file_name": [file_name],
-                "file_path": [file_path],
-                "file_type": [data_type],
-                "data_date_year": [data_date_year],
-                "data_date_month": [data_date_month],
-                "row_count": [df.shape[0]],
-                "column_count": [df.shape[1]]
-
-            }
-        )
-        df_base = pd.concat([df_base, df_temp], ignore_index=True)
+            df = load_data_file(file_path)
+            df_temp = pd.DataFrame(
+                {
+                    "file_name": [file_name],
+                    "file_path": [file_path],
+                    "file_type": [data_type],
+                    "data_date_year": [data_date_year],
+                    "data_date_month": [data_date_month],
+                    "row_count": [df.shape[0]],
+                    "column_count": [df.shape[1]]
+                }
+            )
+            return df_temp
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
+            return pd.DataFrame()
+    
+    # Use ThreadPoolExecutor to process files in parallel
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        futures = {executor.submit(process_file, file_path): file_path for file_path in data_files}
+        
+        for future in as_completed(futures):
+            try:
+                df_temp = future.result()
+                if not df_temp.empty:
+                    df_base = pd.concat([df_base, df_temp], ignore_index=True)
+            except Exception as e:
+                print(f"Error in thread: {e}")
+    
     return df_base
 
 def main():
