@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 import logging
+import argparse
 from typing import Dict, List, Tuple
 
 # Configure logging
@@ -378,13 +379,14 @@ def engineer_files(file_path: str) -> Tuple[bool, pd.DataFrame, str]:
         return False, None, f"Unexpected error processing {file_name}: {str(e)}"
 
 
-def engineer_all(file_list: List[str], engineer_folder: str) -> Dict:
+def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False) -> Dict:
     """
     Process all files and save engineered versions.
     
     Args:
         file_list: List of file paths to process
         engineer_folder: Output directory for engineered files
+        rerun: If True, reprocess all files even if they exist
     
     Returns:
         Dictionary with processing statistics
@@ -394,6 +396,7 @@ def engineer_all(file_list: List[str], engineer_folder: str) -> Dict:
         'successful': 0,
         'failed': 0,
         'skipped': 0,
+        'already_exists': 0,
         'errors': []
     }
     
@@ -405,6 +408,15 @@ def engineer_all(file_list: List[str], engineer_folder: str) -> Dict:
     logger.info(f"Processing {len(file_list)} files. Output: {engineer_folder}")
     
     for file_path in file_list:
+        file_name = os.path.basename(file_path)
+        output_path = os.path.join(engineer_folder, file_name)
+        
+        # Check if engineered file already exists
+        if os.path.exists(output_path) and not rerun:
+            logger.info(f"Engineered file already exists (skipping): {file_name}")
+            stats['already_exists'] += 1
+            continue
+        
         success, eng_df, message = engineer_files(file_path)
         
         if not success:
@@ -417,10 +429,7 @@ def engineer_all(file_list: List[str], engineer_folder: str) -> Dict:
             continue
         
         try:
-            file_name = os.path.basename(file_path)
-            output_path = os.path.join(engineer_folder, file_name)
-            
-            # Check for existing file
+            # Check for existing file and warn if rerun
             if os.path.exists(output_path):
                 logger.warning(f"Overwriting existing file: {output_path}")
             
@@ -437,9 +446,10 @@ def engineer_all(file_list: List[str], engineer_folder: str) -> Dict:
     # Summary
     logger.info(f"\n===== PROCESSING SUMMARY =====")
     logger.info(f"Total files: {stats['total']}")
-    logger.info(f"Successful: {stats['successful']}")
+    logger.info(f"Newly processed: {stats['successful']}")
+    logger.info(f"Already existed (skipped): {stats['already_exists']}")
     logger.info(f"Failed: {stats['failed']}")
-    logger.info(f"Skipped: {stats['skipped']}")
+    logger.info(f"Skipped (non-CSV): {stats['skipped']}")
     
     if stats['errors']:
         logger.warning(f"Errors encountered:")
@@ -449,8 +459,13 @@ def engineer_all(file_list: List[str], engineer_folder: str) -> Dict:
     return stats
 
 
-def main():
-    """Main entry point for data engineering pipeline."""
+def main(rerun: bool = False):
+    """
+    Main entry point for data engineering pipeline.
+    
+    Args:
+        rerun: If True, reprocess all files even if engineered versions exist
+    """
     try:
         # Define data folders - use absolute path
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -458,22 +473,26 @@ def main():
         engineer_folder = os.path.join(data_folder, 'engineered')
         
         logger.info(f"Starting data engineering pipeline")
+        if rerun:
+            logger.info(f"Mode: RERUN (reprocessing all files)")
+        else:
+            logger.info(f"Mode: NORMAL (skipping existing files)")
         logger.info(f"Data folder: {data_folder}")
         logger.info(f"Output folder: {engineer_folder}")
         
         # Validate data folder exists
         if not os.path.isdir(data_folder):
             logger.error(f"Data folder not found: {data_folder}")
-            return
+            return False
         
         # Crawl and process files
         file_list = crawl_folder(data_folder)
         
         if not file_list:
             logger.warning("No files found to process")
-            return
+            return False
         
-        stats = engineer_all(file_list, engineer_folder)
+        stats = engineer_all(file_list, engineer_folder, rerun=rerun)
         
         # Exit with success/failure code
         if stats['failed'] > 0:
@@ -489,5 +508,21 @@ def main():
 
 
 if __name__ == '__main__':
-    success = main()
+    parser = argparse.ArgumentParser(
+        description='NYC TLC Data Engineering Pipeline',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python data_engineer.py              # Run pipeline (skip if engineered folder exists)
+  python data_engineer.py --rerun      # Reprocess all files (overwrite engineered folder)
+        """
+    )
+    parser.add_argument(
+        '--rerun',
+        action='store_true',
+        help='Reprocess all files even if engineered folder already exists'
+    )
+    
+    args = parser.parse_args()
+    success = main(rerun=args.rerun)
     exit(0 if success else 1)
