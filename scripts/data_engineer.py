@@ -89,15 +89,22 @@ def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
             raise KeyError(f"Missing required columns: {missing_cols}")
         
         # ===== TEMPORAL FEATURES =====
-        df = df.with_columns(
-            pl.col(config['pickup_col']).str.to_datetime(format=None).alias('pickup_datetime')
-        )
+        # Handle case where column is already datetime or is a string
+        pickup_col_data = df[config['pickup_col']]
+        if pickup_col_data.dtype in [pl.Datetime('us'), pl.Datetime('ns'), pl.Datetime('ms')]:
+            # Already datetime, just rename it
+            df = df.with_columns(pl.col(config['pickup_col']).alias('pickup_datetime'))
+        else:
+            # String type, convert to datetime
+            df = df.with_columns(pl.col(config['pickup_col']).str.to_datetime(format=None).alias('pickup_datetime'))
         
         # Dropoff datetime may not exist for FHV
         if config['dropoff_col'] in df.columns:
-            df = df.with_columns(
-                pl.col(config['dropoff_col']).str.to_datetime(format=None).alias('dropoff_datetime')
-            )
+            dropoff_col_data = df[config['dropoff_col']]
+            if dropoff_col_data.dtype in [pl.Datetime('us'), pl.Datetime('ns'), pl.Datetime('ms')]:
+                df = df.with_columns(pl.col(config['dropoff_col']).alias('dropoff_datetime'))
+            else:
+                df = df.with_columns(pl.col(config['dropoff_col']).str.to_datetime(format=None).alias('dropoff_datetime'))
         else:
             df = df.with_columns(
                 pl.lit(None).cast(pl.Datetime('us')).alias('dropoff_datetime')
@@ -180,9 +187,9 @@ def _engineer_fhv_features(df: pl.DataFrame) -> pl.DataFrame:
     # Mainly just pickup/dropoff locations and basic info
     # Check for dispatching info if it exists
     if 'on_scene_datetime' in df.columns:
-        df = df.with_columns(
-            pl.col('on_scene_datetime').str.to_datetime()
-        )
+        col_data = df['on_scene_datetime']
+        if col_data.dtype not in [pl.Datetime('us'), pl.Datetime('ns'), pl.Datetime('ms')]:
+            df = df.with_columns(pl.col('on_scene_datetime').str.to_datetime())
     return df
 
 
@@ -219,9 +226,16 @@ def _engineer_fhvhv_features(df: pl.DataFrame) -> pl.DataFrame:
     """Engineer FHVHV (for-hire high-volume) specific features."""
     # Request response time metrics
     if 'request_datetime' in df.columns and 'on_scene_datetime' in df.columns:
+        # Handle datetime conversion if needed
+        request_col_data = df['request_datetime']
+        if request_col_data.dtype not in [pl.Datetime('us'), pl.Datetime('ns'), pl.Datetime('ms')]:
+            df = df.with_columns(pl.col('request_datetime').str.to_datetime())
+        
+        onscene_col_data = df['on_scene_datetime']
+        if onscene_col_data.dtype not in [pl.Datetime('us'), pl.Datetime('ns'), pl.Datetime('ms')]:
+            df = df.with_columns(pl.col('on_scene_datetime').str.to_datetime())
+        
         df = df.with_columns(
-            pl.col('request_datetime').str.to_datetime().alias('request_datetime'),
-            pl.col('on_scene_datetime').str.to_datetime().alias('on_scene_datetime'),
             ((pl.col('pickup_datetime') - pl.col('request_datetime')).dt.total_seconds() / 60).alias('request_to_pickup_minutes'),
             ((pl.col('on_scene_datetime') - pl.col('request_datetime')).dt.total_seconds() / 60).alias('request_to_onscene_minutes'),
         )
