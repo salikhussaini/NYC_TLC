@@ -1,0 +1,793 @@
+2026-08-03 23:15:10,353 - INFO - Starting download of 1280 files...
+2026-08-03 23:15:10,355 - INFO - Attempting: yellow_tripdata_2000-01.parquet
+2026-08-03 23:15:10,356 - INFO - Attempting: yellow_tripdata_2000-02.parquet
+2026-08-03 23:15:10,357 - INFO - Attempting: yellow_tripdata_2000-03.parquet
+2026-08-03 23:15:10,362 - INFO - Attempting: yellow_tripdata_2000-04.parquet
+2026-08-03 23:15:11,073 - WARNING - Skipped (not found): yellow_tripdata_2000-01.parquet
+2026-08-03 23:15:11,075 - INFO - Attempting: yellow_tripdata_2000-05.parquet
+2026-08-03 23:15:11,214 - WARNING - Skipped (not found): yellow_tripdata_2000-02.parquet
+2026-08-03 23:15:11,216 - INFO - Attempting: yellow_tripdata_2000-06.parquet
+2026-08-03 23:15:12,008 - WARNING - Skipped (not found): yellow_tripdata_2000-03.parquet
+2026-08-03 23:15:12,010 - INFO - Attempting: yellow_tripdata_2000-07.parquet
+2026-08-03 23:15:12,532 - WARNING - Skipped (not found): yellow_tripdata_2000-04.parquet
+2026-08-03 23:15:12,558 - INFO - Attempting: yellow_tripdata_2000-08.parquet
+2026-08-03 23:15:12,805 - WARNING - Skipped (not found): yellow_tripdata_2000-05.parquet
+2026-08-03 23:15:12,826 - INFO - Attempting: yellow_tripdata_2000-09.parquet
+2026-08-03 23:15:13,603 - WARNING - Skipped (not found): yellow_tripdata_2000-06.parquet
+2026-08-03 23:15:13,693 - INFO - Attempting: yellow_tripdata_2000-10.parquet
+2026-08-03 23:15:13,908 - WARNING - Skipped (not found): yellow_tripdata_2000-07.parquet
+2026-08-03 23:15:13,910 - INFO - Attempting: yellow_tripdata_2000-11.parquet
+2026-08-03 23:15:14,283 - WARNING - Skipped (not found): yellow_tripdata_2000-08.parquet
+2026-08-03 23:15:14,286 - INFO - Attempting: yellow_tripdata_2000-12.parquet
+2026-08-03 23:15:14,887 - WARNING - Skipped (not found): yellow_tripdata_2000-09.parquet
+2026-08-03 23:15:14,890 - INFO - Attempting: yellow_tripdata_2001-01.parquet
+2026-08-03 23:15:15,225 - WARNING - Skipped (not found): yellow_tripdata_2000-10.parquet
+2026-08-03 23:15:15,228 - INFO - Attempting: yellow_tripdata_2001-02.parquet
+2026-08-03 23:15:15,815 - WARNING - Skipped (not found): yellow_tripdata_2000-11.parquet
+2026-08-03 23:15:15,818 - INFO - Attempting: yellow_tripdata_2001-03.parquet
+2026-08-03 23:15:16,457 - WARNING - Skipped (not found): yellow_tripdata_2000-12.parquet
+2026-08-03 23:15:16,461 - INFO - Attempting: yellow_tripdata_2001-04.parquet
+2026-08-03 23:15:16,727 - WARNING - Skipped (not found): yellow_tripdata_2001-01.parquet
+2026-08-03 23:15:16,730 - INFO - Attempting: yellow_tripdata_2001-05.parquet
+2026-08-03 23:15:17,430 - WARNING - Skipped (not found): yellow_tripdata_2001-02.parquet
+2026-08-03 23:15:17,434 - INFO - Attempting: yellow_tripdata_2001-06.parquet
+2026-08-03 23:15:17,798 - WARNING - Skipped (not found): yellow_tripdata_2001-03.parquet
+2026-08-03 23:15:17,801 - INFO - Attempting: yellow_tripdata_2001-07.parquet
+2026-08-03 23:15:18,347 - WARNING - Skipped (not found): yellow_tripdata_2001-04.parquet
+2026-08-03 23:15:18,350 - INFO - Attempting: yellow_tripdata_2001-08.parquet
+2026-08-03 23:15:18,918 - WARNING - Skipped (not found): yellow_tripdata_2001-05.parquet
+2026-08-03 23:15:18,921 - INFO - Attempting: yellow_tripdata_2001-09.parquet
+2026-08-03 23:15:19,342 - WARNING - Skipped (not found): yellow_tripdata_2001-06.parquet
+2026-08-03 23:15:19,345 - INFO - Attempting: yellow_tripdata_2001-10.parquet
+2026-08-03 23:15:19,933 - WARNING - Skipped (not found): yellow_tripdata_2001-07.parquet
+2026-08-03 23:15:19,937 - INFO - Attempting: yellow_tripdata_2001-11.parquet
+2026-08-03 23:15:20,500 - WARNING - Skipped (not found): yellow_tripdata_2001-08.parquet
+2026-08-03 23:15:20,503 - INFO - Attempting: yellow_tripdata_2001-12.parquet
+2026-08-03 23:15:20,713 - WARNING - Skipped (not found): yellow_tripdata_2001-09.parquet
+2026-08-03 23:15:20,735 - INFO - Attempting: yellow_tripdata_2002-01.parquet
+2026-08-03 23:15:21,308 - WARNING - Skipped (not found): yellow_tripdata_2001-10.parquet
+2026-08-03 23:15:21,310 - INFO - Attempting: yellow_tripdata_2002-02.parquet
+2026-08-03 23:15:21,807 - WARNING - Skipped (not found): yellow_tripdata_2001-11.parquet
+2026-08-03 23:15:21,818 - INFO - Attempting: yellow_tripdata_2002-03.parquet
+2026-08-03 23:15:22,173 - WARNING - Skipped (not found): yellow_tripdata_2001-12.parquet
+2026-08-03 23:15:22,184 - INFO - Attempting: yellow_tripdata_2002-04.parquet
+2026-08-03 23:15:22,816 - WARNING - Skipped (not found): yellow_tripdata_2002-01.parquet
+2026-08-03 23:15:22,833 - INFO - Attempting: yellow_tripdata_2002-05.parquet
+2026-08-03 23:15:23,258 - WARNING - Skipped (not found): yellow_tripdata_2002-02.parquet
+2026-08-03 23:15:23,280 - INFO - Attempting: yellow_tripdata_2002-06.parquet
+2026-08-03 23:15:23,917 - WARNING - Skipped (not found): yellow_tripdata_2002-03.parquet
+2026-08-03 23:15:23,987 - INFO - Attempting: yellow_tripdata_2002-07.parquet
+2026-08-03 23:15:24,386 - WARNING - Skipped (not found): yellow_tripdata_2002-04.parquet
+2026-08-03 23:15:24,398 - INFO - Attempting: yellow_tripdata_2002-08.parquet
+2026-08-03 23:15:24,828 - WARNING - Skipped (not found): yellow_tripdata_2002-05.parquet
+2026-08-03 23:15:24,867 - INFO - Attempting: yellow_tripdata_2002-09.parquet
+2026-08-03 23:15:25,359 - WARNING - Skipped (not found): yellow_tripdata_2002-06.parquet
+2026-08-03 23:15:25,377 - INFO - Attempting: yellow_tripdata_2002-10.parquet
+2026-08-03 23:15:25,838 - WARNING - Skipped (not found): yellow_tripdata_2002-07.parquet
+2026-08-03 23:15:25,898 - INFO - Attempting: yellow_tripdata_2002-11.parquet
+2026-08-03 23:15:26,209 - WARNING - Skipped (not found): yellow_tripdata_2002-08.parquet
+2026-08-03 23:15:26,226 - INFO - Attempting: yellow_tripdata_2002-12.parquet
+2026-08-03 23:15:26,969 - WARNING - Skipped (not found): yellow_tripdata_2002-09.parquet
+2026-08-03 23:15:26,996 - INFO - Attempting: yellow_tripdata_2003-01.parquet
+2026-08-03 23:15:27,462 - WARNING - Skipped (not found): yellow_tripdata_2002-10.parquet
+2026-08-03 23:15:27,481 - INFO - Attempting: yellow_tripdata_2003-02.parquet
+2026-08-03 23:15:27,743 - WARNING - Skipped (not found): yellow_tripdata_2002-11.parquet
+2026-08-03 23:15:27,787 - INFO - Attempting: yellow_tripdata_2003-03.parquet
+2026-08-03 23:15:28,248 - WARNING - Skipped (not found): yellow_tripdata_2002-12.parquet
+2026-08-03 23:15:28,257 - INFO - Attempting: yellow_tripdata_2003-04.parquet
+2026-08-03 23:15:28,743 - WARNING - Skipped (not found): yellow_tripdata_2003-01.parquet
+2026-08-03 23:15:28,751 - INFO - Attempting: yellow_tripdata_2003-05.parquet
+2026-08-03 23:15:29,513 - WARNING - Skipped (not found): yellow_tripdata_2003-02.parquet
+2026-08-03 23:15:29,520 - INFO - Attempting: yellow_tripdata_2003-06.parquet
+2026-08-03 23:15:29,854 - WARNING - Skipped (not found): yellow_tripdata_2003-03.parquet
+2026-08-03 23:15:29,860 - INFO - Attempting: yellow_tripdata_2003-07.parquet
+2026-08-03 23:15:30,147 - WARNING - Skipped (not found): yellow_tripdata_2003-04.parquet
+2026-08-03 23:15:30,155 - INFO - Attempting: yellow_tripdata_2003-08.parquet
+2026-08-03 23:15:30,702 - WARNING - Skipped (not found): yellow_tripdata_2003-05.parquet
+2026-08-03 23:15:30,708 - INFO - Attempting: yellow_tripdata_2003-09.parquet
+2026-08-03 23:15:31,322 - WARNING - Skipped (not found): yellow_tripdata_2003-06.parquet
+2026-08-03 23:15:31,339 - INFO - Attempting: yellow_tripdata_2003-10.parquet
+2026-08-03 23:15:31,644 - WARNING - Skipped (not found): yellow_tripdata_2003-07.parquet
+2026-08-03 23:15:31,649 - INFO - Attempting: yellow_tripdata_2003-11.parquet
+2026-08-03 23:15:32,342 - WARNING - Skipped (not found): yellow_tripdata_2003-08.parquet
+2026-08-03 23:15:32,360 - INFO - Attempting: yellow_tripdata_2003-12.parquet
+2026-08-03 23:15:32,920 - WARNING - Skipped (not found): yellow_tripdata_2003-09.parquet
+2026-08-03 23:15:33,085 - INFO - Attempting: yellow_tripdata_2004-01.parquet
+2026-08-03 23:15:33,719 - WARNING - Skipped (not found): yellow_tripdata_2003-10.parquet
+2026-08-03 23:15:33,752 - INFO - Attempting: yellow_tripdata_2004-02.parquet
+2026-08-03 23:15:33,908 - WARNING - Skipped (not found): yellow_tripdata_2003-11.parquet
+2026-08-03 23:15:33,921 - INFO - Attempting: yellow_tripdata_2004-03.parquet
+2026-08-03 23:15:34,747 - WARNING - Skipped (not found): yellow_tripdata_2003-12.parquet
+2026-08-03 23:15:34,836 - INFO - Attempting: yellow_tripdata_2004-04.parquet
+2026-08-03 23:15:35,169 - WARNING - Skipped (not found): yellow_tripdata_2004-01.parquet
+2026-08-03 23:15:35,182 - INFO - Attempting: yellow_tripdata_2004-05.parquet
+2026-08-03 23:15:35,339 - WARNING - Skipped (not found): yellow_tripdata_2004-02.parquet
+2026-08-03 23:15:35,430 - INFO - Attempting: yellow_tripdata_2004-06.parquet
+2026-08-03 23:15:36,313 - WARNING - Skipped (not found): yellow_tripdata_2004-03.parquet
+2026-08-03 23:15:36,430 - INFO - Attempting: yellow_tripdata_2004-07.parquet
+2026-08-03 23:15:36,547 - WARNING - Skipped (not found): yellow_tripdata_2004-04.parquet
+2026-08-03 23:15:36,563 - INFO - Attempting: yellow_tripdata_2004-08.parquet
+2026-08-03 23:15:36,790 - WARNING - Skipped (not found): yellow_tripdata_2004-05.parquet
+2026-08-03 23:15:36,896 - INFO - Attempting: yellow_tripdata_2004-09.parquet
+2026-08-03 23:15:37,829 - WARNING - Skipped (not found): yellow_tripdata_2004-06.parquet
+2026-08-03 23:15:37,846 - INFO - Attempting: yellow_tripdata_2004-10.parquet
+2026-08-03 23:15:37,884 - WARNING - Skipped (not found): yellow_tripdata_2004-07.parquet
+2026-08-03 23:15:37,938 - INFO - Attempting: yellow_tripdata_2004-11.parquet
+2026-08-03 23:15:38,802 - WARNING - Skipped (not found): yellow_tripdata_2004-08.parquet
+2026-08-03 23:15:38,907 - INFO - Attempting: yellow_tripdata_2004-12.parquet
+2026-08-03 23:15:39,001 - WARNING - Skipped (not found): yellow_tripdata_2004-09.parquet
+2026-08-03 23:15:39,030 - INFO - Attempting: yellow_tripdata_2005-01.parquet
+2026-08-03 23:15:39,230 - WARNING - Skipped (not found): yellow_tripdata_2004-10.parquet
+2026-08-03 23:15:39,293 - INFO - Attempting: yellow_tripdata_2005-02.parquet
+2026-08-03 23:15:40,400 - WARNING - Skipped (not found): yellow_tripdata_2004-11.parquet
+2026-08-03 23:15:40,448 - INFO - Attempting: yellow_tripdata_2005-03.parquet
+2026-08-03 23:15:40,604 - WARNING - Skipped (not found): yellow_tripdata_2004-12.parquet
+2026-08-03 23:15:40,687 - INFO - Attempting: yellow_tripdata_2005-04.parquet
+2026-08-03 23:15:41,149 - WARNING - Skipped (not found): yellow_tripdata_2005-01.parquet
+2026-08-03 23:15:41,246 - INFO - Attempting: yellow_tripdata_2005-05.parquet
+2026-08-03 23:15:41,543 - WARNING - Skipped (not found): yellow_tripdata_2005-02.parquet
+2026-08-03 23:15:41,639 - INFO - Attempting: yellow_tripdata_2005-06.parquet
+2026-08-03 23:15:42,275 - WARNING - Skipped (not found): yellow_tripdata_2005-03.parquet
+2026-08-03 23:15:42,358 - INFO - Attempting: yellow_tripdata_2005-07.parquet
+2026-08-03 23:15:42,710 - WARNING - Skipped (not found): yellow_tripdata_2005-04.parquet
+2026-08-03 23:15:42,715 - INFO - Attempting: yellow_tripdata_2005-08.parquet
+2026-08-03 23:15:42,822 - WARNING - Skipped (not found): yellow_tripdata_2005-05.parquet
+2026-08-03 23:15:42,823 - INFO - Attempting: yellow_tripdata_2005-09.parquet
+2026-08-03 23:15:43,485 - WARNING - Skipped (not found): yellow_tripdata_2005-06.parquet
+2026-08-03 23:15:43,486 - INFO - Attempting: yellow_tripdata_2005-10.parquet
+2026-08-03 23:15:43,741 - WARNING - Skipped (not found): yellow_tripdata_2005-07.parquet
+2026-08-03 23:15:43,742 - INFO - Attempting: yellow_tripdata_2005-11.parquet
+2026-08-03 23:15:44,327 - WARNING - Skipped (not found): yellow_tripdata_2005-08.parquet
+2026-08-03 23:15:44,339 - INFO - Attempting: yellow_tripdata_2005-12.parquet
+2026-08-03 23:15:44,936 - WARNING - Skipped (not found): yellow_tripdata_2005-09.parquet
+2026-08-03 23:15:44,946 - INFO - Attempting: yellow_tripdata_2006-01.parquet
+2026-08-03 23:15:45,619 - WARNING - Skipped (not found): yellow_tripdata_2005-10.parquet
+2026-08-03 23:15:45,719 - INFO - Attempting: yellow_tripdata_2006-02.parquet
+2026-08-03 23:15:46,119 - WARNING - Skipped (not found): yellow_tripdata_2005-11.parquet
+2026-08-03 23:15:46,241 - INFO - Attempting: yellow_tripdata_2006-03.parquet
+2026-08-03 23:15:46,655 - WARNING - Skipped (not found): yellow_tripdata_2005-12.parquet
+2026-08-03 23:15:46,668 - INFO - Attempting: yellow_tripdata_2006-04.parquet
+2026-08-03 23:15:47,289 - WARNING - Skipped (not found): yellow_tripdata_2006-01.parquet
+2026-08-03 23:15:47,339 - INFO - Attempting: yellow_tripdata_2006-05.parquet
+2026-08-03 23:15:47,437 - WARNING - Skipped (not found): yellow_tripdata_2006-02.parquet
+2026-08-03 23:15:47,489 - INFO - Attempting: yellow_tripdata_2006-06.parquet
+2026-08-03 23:15:48,000 - WARNING - Skipped (not found): yellow_tripdata_2006-03.parquet
+2026-08-03 23:15:48,044 - INFO - Attempting: yellow_tripdata_2006-07.parquet
+2026-08-03 23:15:48,618 - WARNING - Skipped (not found): yellow_tripdata_2006-04.parquet
+2026-08-03 23:15:48,674 - INFO - Attempting: yellow_tripdata_2006-08.parquet
+2026-08-03 23:15:49,149 - WARNING - Skipped (not found): yellow_tripdata_2006-05.parquet
+2026-08-03 23:15:49,237 - INFO - Attempting: yellow_tripdata_2006-09.parquet
+2026-08-03 23:15:49,494 - WARNING - Skipped (not found): yellow_tripdata_2006-06.parquet
+2026-08-03 23:15:49,541 - INFO - Attempting: yellow_tripdata_2006-10.parquet
+2026-08-03 23:15:50,080 - WARNING - Skipped (not found): yellow_tripdata_2006-07.parquet
+2026-08-03 23:15:50,156 - INFO - Attempting: yellow_tripdata_2006-11.parquet
+2026-08-03 23:15:50,475 - WARNING - Skipped (not found): yellow_tripdata_2006-08.parquet
+2026-08-03 23:15:50,550 - INFO - Attempting: yellow_tripdata_2006-12.parquet
+2026-08-03 23:15:51,231 - WARNING - Skipped (not found): yellow_tripdata_2006-09.parquet
+2026-08-03 23:15:51,279 - INFO - Attempting: yellow_tripdata_2007-01.parquet
+2026-08-03 23:15:51,740 - WARNING - Skipped (not found): yellow_tripdata_2006-10.parquet
+2026-08-03 23:15:51,803 - INFO - Attempting: yellow_tripdata_2007-02.parquet
+2026-08-03 23:15:52,043 - WARNING - Skipped (not found): yellow_tripdata_2006-11.parquet
+2026-08-03 23:15:52,101 - INFO - Attempting: yellow_tripdata_2007-03.parquet
+2026-08-03 23:15:52,815 - WARNING - Skipped (not found): yellow_tripdata_2006-12.parquet
+2026-08-03 23:15:52,880 - INFO - Attempting: yellow_tripdata_2007-04.parquet
+2026-08-03 23:15:52,993 - WARNING - Skipped (not found): yellow_tripdata_2007-01.parquet
+2026-08-03 23:15:53,055 - INFO - Attempting: yellow_tripdata_2007-05.parquet
+2026-08-03 23:15:53,418 - WARNING - Skipped (not found): yellow_tripdata_2007-02.parquet
+2026-08-03 23:15:53,512 - INFO - Attempting: yellow_tripdata_2007-06.parquet
+2026-08-03 23:15:54,139 - WARNING - Skipped (not found): yellow_tripdata_2007-03.parquet
+2026-08-03 23:15:54,191 - INFO - Attempting: yellow_tripdata_2007-07.parquet
+2026-08-03 23:15:54,598 - WARNING - Skipped (not found): yellow_tripdata_2007-04.parquet
+2026-08-03 23:15:54,674 - INFO - Attempting: yellow_tripdata_2007-08.parquet
+2026-08-03 23:15:55,084 - WARNING - Skipped (not found): yellow_tripdata_2007-05.parquet
+2026-08-03 23:15:55,126 - INFO - Attempting: yellow_tripdata_2007-09.parquet
+2026-08-03 23:15:55,410 - WARNING - Skipped (not found): yellow_tripdata_2007-06.parquet
+2026-08-03 23:15:55,451 - INFO - Attempting: yellow_tripdata_2007-10.parquet
+2026-08-03 23:15:55,902 - WARNING - Skipped (not found): yellow_tripdata_2007-07.parquet
+2026-08-03 23:15:55,950 - INFO - Attempting: yellow_tripdata_2007-11.parquet
+2026-08-03 23:15:56,540 - WARNING - Skipped (not found): yellow_tripdata_2007-08.parquet
+2026-08-03 23:15:56,598 - INFO - Attempting: yellow_tripdata_2007-12.parquet
+2026-08-03 23:15:56,843 - WARNING - Skipped (not found): yellow_tripdata_2007-09.parquet
+2026-08-03 23:15:56,951 - INFO - Attempting: yellow_tripdata_2008-01.parquet
+2026-08-03 23:15:57,709 - WARNING - Skipped (not found): yellow_tripdata_2007-10.parquet
+2026-08-03 23:15:57,829 - INFO - Attempting: yellow_tripdata_2008-02.parquet
+2026-08-03 23:15:57,914 - WARNING - Skipped (not found): yellow_tripdata_2007-11.parquet
+2026-08-03 23:15:57,961 - INFO - Attempting: yellow_tripdata_2008-03.parquet
+2026-08-03 23:15:58,433 - WARNING - Skipped (not found): yellow_tripdata_2007-12.parquet
+2026-08-03 23:15:58,507 - INFO - Attempting: yellow_tripdata_2008-04.parquet
+2026-08-03 23:15:59,033 - WARNING - Skipped (not found): yellow_tripdata_2008-01.parquet
+2026-08-03 23:15:59,141 - INFO - Attempting: yellow_tripdata_2008-05.parquet
+2026-08-03 23:15:59,378 - WARNING - Skipped (not found): yellow_tripdata_2008-02.parquet
+2026-08-03 23:15:59,444 - INFO - Attempting: yellow_tripdata_2008-06.parquet
+2026-08-03 23:16:00,075 - WARNING - Skipped (not found): yellow_tripdata_2008-03.parquet
+2026-08-03 23:16:00,185 - INFO - Attempting: yellow_tripdata_2008-07.parquet
+2026-08-03 23:16:00,548 - WARNING - Skipped (not found): yellow_tripdata_2008-04.parquet
+2026-08-03 23:16:00,657 - INFO - Attempting: yellow_tripdata_2008-08.parquet
+2026-08-03 23:16:01,179 - WARNING - Skipped (not found): yellow_tripdata_2008-05.parquet
+2026-08-03 23:16:01,264 - INFO - Attempting: yellow_tripdata_2008-09.parquet
+2026-08-03 23:16:01,445 - WARNING - Skipped (not found): yellow_tripdata_2008-06.parquet
+2026-08-03 23:16:01,518 - INFO - Attempting: yellow_tripdata_2008-10.parquet
+2026-08-03 23:16:01,881 - WARNING - Skipped (not found): yellow_tripdata_2008-07.parquet
+2026-08-03 23:16:01,988 - INFO - Attempting: yellow_tripdata_2008-11.parquet
+2026-08-03 23:16:02,640 - WARNING - Skipped (not found): yellow_tripdata_2008-08.parquet
+2026-08-03 23:16:02,667 - INFO - Attempting: yellow_tripdata_2008-12.parquet
+2026-08-03 23:16:02,797 - WARNING - Skipped (not found): yellow_tripdata_2008-09.parquet
+2026-08-03 23:16:02,872 - INFO - Attempting: yellow_tripdata_2009-01.parquet
+2026-08-03 23:16:03,433 - WARNING - Skipped (not found): yellow_tripdata_2008-10.parquet
+2026-08-03 23:16:03,519 - INFO - Attempting: yellow_tripdata_2009-02.parquet
+2026-08-03 23:16:04,262 - WARNING - Skipped (not found): yellow_tripdata_2008-11.parquet
+2026-08-03 23:16:04,313 - INFO - Attempting: yellow_tripdata_2009-03.parquet
+2026-08-03 23:16:04,355 - WARNING - Skipped (not found): yellow_tripdata_2008-12.parquet
+2026-08-03 23:16:04,417 - INFO - Attempting: yellow_tripdata_2009-04.parquet
+2026-08-03 23:16:04,946 - WARNING - Skipped (not found): yellow_tripdata_2009-01.parquet
+2026-08-03 23:16:05,027 - INFO - Attempting: yellow_tripdata_2009-05.parquet
+2026-08-03 23:16:05,694 - WARNING - Skipped (not found): yellow_tripdata_2009-02.parquet
+2026-08-03 23:16:05,709 - INFO - Attempting: yellow_tripdata_2009-06.parquet
+2026-08-03 23:16:05,809 - WARNING - Skipped (not found): yellow_tripdata_2009-03.parquet
+2026-08-03 23:16:05,823 - INFO - Attempting: yellow_tripdata_2009-07.parquet
+2026-08-03 23:16:06,214 - WARNING - Skipped (not found): yellow_tripdata_2009-04.parquet
+2026-08-03 23:16:06,215 - INFO - Attempting: yellow_tripdata_2009-08.parquet
+2026-08-03 23:16:07,137 - WARNING - Skipped (not found): yellow_tripdata_2009-05.parquet
+2026-08-03 23:16:07,217 - INFO - Attempting: yellow_tripdata_2009-09.parquet
+2026-08-03 23:16:07,609 - WARNING - Skipped (not found): yellow_tripdata_2009-06.parquet
+2026-08-03 23:16:07,673 - INFO - Attempting: yellow_tripdata_2009-10.parquet
+2026-08-03 23:16:08,104 - WARNING - Skipped (not found): yellow_tripdata_2009-07.parquet
+2026-08-03 23:16:08,151 - INFO - Attempting: yellow_tripdata_2009-11.parquet
+2026-08-03 23:16:08,570 - WARNING - Skipped (not found): yellow_tripdata_2009-08.parquet
+2026-08-03 23:16:08,698 - INFO - Attempting: yellow_tripdata_2009-12.parquet
+2026-08-03 23:16:08,965 - WARNING - Skipped (not found): yellow_tripdata_2009-09.parquet
+2026-08-03 23:16:09,047 - INFO - Skipped (exists): yellow_tripdata_2010-01.parquet
+2026-08-03 23:16:09,145 - INFO - Skipped (exists): yellow_tripdata_2010-02.parquet
+2026-08-03 23:16:09,207 - INFO - Skipped (exists): yellow_tripdata_2010-03.parquet
+2026-08-03 23:16:09,299 - INFO - Skipped (exists): yellow_tripdata_2010-04.parquet
+2026-08-03 23:16:09,350 - INFO - Skipped (exists): yellow_tripdata_2010-05.parquet
+2026-08-03 23:16:09,361 - WARNING - Skipped (not found): yellow_tripdata_2009-10.parquet
+2026-08-03 23:16:09,389 - INFO - Skipped (exists): yellow_tripdata_2010-06.parquet
+2026-08-03 23:16:09,438 - INFO - Skipped (exists): yellow_tripdata_2010-07.parquet
+2026-08-03 23:16:09,475 - INFO - Skipped (exists): yellow_tripdata_2010-08.parquet
+2026-08-03 23:16:09,513 - INFO - Skipped (exists): yellow_tripdata_2010-09.parquet
+2026-08-03 23:16:09,615 - INFO - Skipped (exists): yellow_tripdata_2010-10.parquet
+2026-08-03 23:16:09,632 - INFO - Skipped (exists): yellow_tripdata_2010-11.parquet
+2026-08-03 23:16:09,685 - INFO - Skipped (exists): yellow_tripdata_2010-12.parquet
+2026-08-03 23:16:09,734 - INFO - Skipped (exists): yellow_tripdata_2011-01.parquet
+2026-08-03 23:16:09,761 - INFO - Skipped (exists): yellow_tripdata_2011-02.parquet
+2026-08-03 23:16:09,786 - INFO - Skipped (exists): yellow_tripdata_2011-03.parquet
+2026-08-03 23:16:09,814 - INFO - Skipped (exists): yellow_tripdata_2011-04.parquet
+2026-08-03 23:16:09,836 - INFO - Skipped (exists): yellow_tripdata_2011-05.parquet
+2026-08-03 23:16:09,853 - INFO - Skipped (exists): yellow_tripdata_2011-06.parquet
+2026-08-03 23:16:09,879 - INFO - Skipped (exists): yellow_tripdata_2011-07.parquet
+2026-08-03 23:16:09,906 - INFO - Skipped (exists): yellow_tripdata_2011-08.parquet
+2026-08-03 23:16:09,940 - WARNING - Skipped (not found): yellow_tripdata_2009-11.parquet
+2026-08-03 23:16:09,945 - INFO - Skipped (exists): yellow_tripdata_2011-09.parquet
+2026-08-03 23:16:09,980 - INFO - Skipped (exists): yellow_tripdata_2011-10.parquet
+2026-08-03 23:16:09,992 - INFO - Skipped (exists): yellow_tripdata_2011-11.parquet
+2026-08-03 23:16:09,994 - INFO - Skipped (exists): yellow_tripdata_2011-12.parquet
+2026-08-03 23:16:10,022 - INFO - Skipped (exists): yellow_tripdata_2012-01.parquet
+2026-08-03 23:16:10,047 - INFO - Skipped (exists): yellow_tripdata_2012-02.parquet
+2026-08-03 23:16:10,053 - INFO - Skipped (exists): yellow_tripdata_2012-03.parquet
+2026-08-03 23:16:10,085 - INFO - Skipped (exists): yellow_tripdata_2012-04.parquet
+2026-08-03 23:16:10,089 - INFO - Skipped (exists): yellow_tripdata_2012-05.parquet
+2026-08-03 23:16:10,094 - INFO - Skipped (exists): yellow_tripdata_2012-06.parquet
+2026-08-03 23:16:10,128 - INFO - Skipped (exists): yellow_tripdata_2012-07.parquet
+2026-08-03 23:16:10,156 - INFO - Skipped (exists): yellow_tripdata_2012-08.parquet
+2026-08-03 23:16:10,189 - INFO - Skipped (exists): yellow_tripdata_2012-09.parquet
+2026-08-03 23:16:10,220 - INFO - Skipped (exists): yellow_tripdata_2012-10.parquet
+2026-08-03 23:16:10,234 - INFO - Skipped (exists): yellow_tripdata_2012-11.parquet
+2026-08-03 23:16:10,268 - INFO - Skipped (exists): yellow_tripdata_2012-12.parquet
+2026-08-03 23:16:10,293 - INFO - Skipped (exists): yellow_tripdata_2013-01.parquet
+2026-08-03 23:16:10,339 - INFO - Skipped (exists): yellow_tripdata_2013-02.parquet
+2026-08-03 23:16:10,350 - INFO - Skipped (exists): yellow_tripdata_2013-03.parquet
+2026-08-03 23:16:10,394 - INFO - Skipped (exists): yellow_tripdata_2013-04.parquet
+2026-08-03 23:16:10,410 - INFO - Skipped (exists): yellow_tripdata_2013-05.parquet
+2026-08-03 23:16:10,455 - INFO - Skipped (exists): yellow_tripdata_2013-06.parquet
+2026-08-03 23:16:10,468 - INFO - Skipped (exists): yellow_tripdata_2013-07.parquet
+2026-08-03 23:16:10,508 - INFO - Skipped (exists): yellow_tripdata_2013-08.parquet
+2026-08-03 23:16:10,520 - INFO - Skipped (exists): yellow_tripdata_2013-09.parquet
+2026-08-03 23:16:10,574 - INFO - Skipped (exists): yellow_tripdata_2013-10.parquet
+2026-08-03 23:16:10,594 - INFO - Skipped (exists): yellow_tripdata_2013-11.parquet
+2026-08-03 23:16:10,608 - WARNING - Skipped (not found): yellow_tripdata_2009-12.parquet
+2026-08-03 23:16:10,636 - INFO - Skipped (exists): yellow_tripdata_2013-12.parquet
+2026-08-03 23:16:10,651 - INFO - Skipped (exists): yellow_tripdata_2014-01.parquet
+2026-08-03 23:16:10,696 - INFO - Skipped (exists): yellow_tripdata_2014-02.parquet
+2026-08-03 23:16:10,710 - INFO - Skipped (exists): yellow_tripdata_2014-03.parquet
+2026-08-03 23:16:10,759 - INFO - Skipped (exists): yellow_tripdata_2014-04.parquet
+2026-08-03 23:16:10,772 - INFO - Skipped (exists): yellow_tripdata_2014-05.parquet
+2026-08-03 23:16:10,820 - INFO - Skipped (exists): yellow_tripdata_2014-06.parquet
+2026-08-03 23:16:10,831 - INFO - Skipped (exists): yellow_tripdata_2014-07.parquet
+2026-08-03 23:16:10,842 - INFO - Skipped (exists): yellow_tripdata_2014-08.parquet
+2026-08-03 23:16:10,882 - INFO - Skipped (exists): yellow_tripdata_2014-09.parquet
+2026-08-03 23:16:10,894 - INFO - Skipped (exists): yellow_tripdata_2014-10.parquet
+2026-08-03 23:16:10,934 - INFO - Skipped (exists): yellow_tripdata_2014-11.parquet
+2026-08-03 23:16:10,952 - INFO - Skipped (exists): yellow_tripdata_2014-12.parquet
+2026-08-03 23:16:11,000 - INFO - Skipped (exists): yellow_tripdata_2015-01.parquet
+2026-08-03 23:16:11,033 - INFO - Skipped (exists): yellow_tripdata_2015-02.parquet
+2026-08-03 23:16:11,051 - INFO - Skipped (exists): yellow_tripdata_2015-03.parquet
+2026-08-03 23:16:11,107 - INFO - Skipped (exists): yellow_tripdata_2015-04.parquet
+2026-08-03 23:16:11,135 - INFO - Skipped (exists): yellow_tripdata_2015-05.parquet
+2026-08-03 23:16:11,169 - INFO - Skipped (exists): yellow_tripdata_2015-06.parquet
+2026-08-03 23:16:11,194 - INFO - Skipped (exists): yellow_tripdata_2015-07.parquet
+2026-08-03 23:16:11,250 - INFO - Skipped (exists): yellow_tripdata_2015-08.parquet
+2026-08-03 23:16:11,269 - INFO - Skipped (exists): yellow_tripdata_2015-09.parquet
+2026-08-03 23:16:11,273 - INFO - Skipped (exists): yellow_tripdata_2015-10.parquet
+2026-08-03 23:16:11,304 - INFO - Skipped (exists): yellow_tripdata_2015-11.parquet
+2026-08-03 23:16:11,310 - INFO - Skipped (exists): yellow_tripdata_2015-12.parquet
+2026-08-03 23:16:11,316 - INFO - Skipped (exists): yellow_tripdata_2016-01.parquet
+2026-08-03 23:16:11,337 - INFO - Skipped (exists): yellow_tripdata_2016-02.parquet
+2026-08-03 23:16:11,347 - INFO - Skipped (exists): yellow_tripdata_2016-03.parquet
+2026-08-03 23:16:11,374 - INFO - Skipped (exists): yellow_tripdata_2016-04.parquet
+2026-08-03 23:16:11,380 - INFO - Skipped (exists): yellow_tripdata_2016-05.parquet
+2026-08-03 23:16:11,384 - INFO - Skipped (exists): yellow_tripdata_2016-06.parquet
+2026-08-03 23:16:11,409 - INFO - Skipped (exists): yellow_tripdata_2016-07.parquet
+2026-08-03 23:16:11,426 - INFO - Skipped (exists): yellow_tripdata_2016-08.parquet
+2026-08-03 23:16:11,433 - INFO - Skipped (exists): yellow_tripdata_2016-09.parquet
+2026-08-03 23:16:11,461 - INFO - Skipped (exists): yellow_tripdata_2016-10.parquet
+2026-08-03 23:16:11,484 - INFO - Skipped (exists): yellow_tripdata_2016-11.parquet
+2026-08-03 23:16:11,501 - INFO - Skipped (exists): yellow_tripdata_2016-12.parquet
+2026-08-03 23:16:11,518 - INFO - Skipped (exists): yellow_tripdata_2017-01.parquet
+2026-08-03 23:16:11,534 - INFO - Skipped (exists): yellow_tripdata_2017-02.parquet
+2026-08-03 23:16:11,564 - INFO - Skipped (exists): yellow_tripdata_2017-03.parquet
+2026-08-03 23:16:11,568 - INFO - Skipped (exists): yellow_tripdata_2017-04.parquet
+2026-08-03 23:16:11,586 - INFO - Skipped (exists): yellow_tripdata_2017-05.parquet
+2026-08-03 23:16:11,613 - INFO - Skipped (exists): yellow_tripdata_2017-06.parquet
+2026-08-03 23:16:11,623 - INFO - Skipped (exists): yellow_tripdata_2017-07.parquet
+2026-08-03 23:16:11,635 - INFO - Skipped (exists): yellow_tripdata_2017-08.parquet
+2026-08-03 23:16:11,666 - INFO - Skipped (exists): yellow_tripdata_2017-09.parquet
+2026-08-03 23:16:11,688 - INFO - Skipped (exists): yellow_tripdata_2017-10.parquet
+2026-08-03 23:16:11,745 - INFO - Skipped (exists): yellow_tripdata_2017-11.parquet
+2026-08-03 23:16:11,787 - INFO - Skipped (exists): yellow_tripdata_2017-12.parquet
+2026-08-03 23:16:11,812 - INFO - Skipped (exists): yellow_tripdata_2018-01.parquet
+2026-08-03 23:16:11,820 - INFO - Skipped (exists): yellow_tripdata_2018-02.parquet
+2026-08-03 23:16:11,871 - INFO - Skipped (exists): yellow_tripdata_2018-03.parquet
+2026-08-03 23:16:11,902 - INFO - Skipped (exists): yellow_tripdata_2018-04.parquet
+2026-08-03 23:16:11,914 - INFO - Skipped (exists): yellow_tripdata_2018-05.parquet
+2026-08-03 23:16:11,960 - INFO - Skipped (exists): yellow_tripdata_2018-06.parquet
+2026-08-03 23:16:11,973 - INFO - Skipped (exists): yellow_tripdata_2018-07.parquet
+2026-08-03 23:16:12,026 - INFO - Skipped (exists): yellow_tripdata_2018-08.parquet
+2026-08-03 23:16:12,062 - INFO - Skipped (exists): yellow_tripdata_2018-09.parquet
+2026-08-03 23:16:12,088 - INFO - Skipped (exists): yellow_tripdata_2018-10.parquet
+2026-08-03 23:16:12,115 - INFO - Skipped (exists): yellow_tripdata_2018-11.parquet
+2026-08-03 23:16:12,145 - INFO - Skipped (exists): yellow_tripdata_2018-12.parquet
+2026-08-03 23:16:12,177 - INFO - Skipped (exists): yellow_tripdata_2019-01.parquet
+2026-08-03 23:16:12,198 - INFO - Skipped (exists): yellow_tripdata_2019-02.parquet
+2026-08-03 23:16:12,226 - INFO - Skipped (exists): yellow_tripdata_2019-03.parquet
+2026-08-03 23:16:12,249 - INFO - Skipped (exists): yellow_tripdata_2019-04.parquet
+2026-08-03 23:16:12,275 - INFO - Skipped (exists): yellow_tripdata_2019-05.parquet
+2026-08-03 23:16:12,308 - INFO - Skipped (exists): yellow_tripdata_2019-06.parquet
+2026-08-03 23:16:12,331 - INFO - Skipped (exists): yellow_tripdata_2019-07.parquet
+2026-08-03 23:16:12,339 - INFO - Skipped (exists): yellow_tripdata_2019-08.parquet
+2026-08-03 23:16:12,341 - INFO - Skipped (exists): yellow_tripdata_2019-09.parquet
+2026-08-03 23:16:12,341 - INFO - Skipped (exists): yellow_tripdata_2019-10.parquet
+2026-08-03 23:16:12,373 - INFO - Skipped (exists): yellow_tripdata_2019-11.parquet
+2026-08-03 23:16:12,376 - INFO - Skipped (exists): yellow_tripdata_2019-12.parquet
+2026-08-03 23:16:12,383 - INFO - Skipped (exists): yellow_tripdata_2020-01.parquet
+2026-08-03 23:16:12,416 - INFO - Skipped (exists): yellow_tripdata_2020-02.parquet
+2026-08-03 23:16:12,422 - INFO - Skipped (exists): yellow_tripdata_2020-03.parquet
+2026-08-03 23:16:12,444 - INFO - Skipped (exists): yellow_tripdata_2020-04.parquet
+2026-08-03 23:16:12,450 - INFO - Skipped (exists): yellow_tripdata_2020-05.parquet
+2026-08-03 23:16:12,481 - INFO - Skipped (exists): yellow_tripdata_2020-06.parquet
+2026-08-03 23:16:12,487 - INFO - Skipped (exists): yellow_tripdata_2020-07.parquet
+2026-08-03 23:16:12,493 - INFO - Skipped (exists): yellow_tripdata_2020-08.parquet
+2026-08-03 23:16:12,517 - INFO - Skipped (exists): yellow_tripdata_2020-09.parquet
+2026-08-03 23:16:12,536 - INFO - Skipped (exists): yellow_tripdata_2020-10.parquet
+2026-08-03 23:16:12,567 - INFO - Skipped (exists): yellow_tripdata_2020-11.parquet
+2026-08-03 23:16:12,574 - INFO - Skipped (exists): yellow_tripdata_2020-12.parquet
+2026-08-03 23:16:12,597 - INFO - Skipped (exists): yellow_tripdata_2021-01.parquet
+2026-08-03 23:16:12,603 - INFO - Skipped (exists): yellow_tripdata_2021-02.parquet
+2026-08-03 23:16:12,608 - INFO - Skipped (exists): yellow_tripdata_2021-03.parquet
+2026-08-03 23:16:12,642 - INFO - Skipped (exists): yellow_tripdata_2021-04.parquet
+2026-08-03 23:16:12,651 - INFO - Skipped (exists): yellow_tripdata_2021-05.parquet
+2026-08-03 23:16:12,674 - INFO - Skipped (exists): yellow_tripdata_2021-06.parquet
+2026-08-03 23:16:12,699 - INFO - Skipped (exists): yellow_tripdata_2021-07.parquet
+2026-08-03 23:16:12,705 - INFO - Skipped (exists): yellow_tripdata_2021-08.parquet
+2026-08-03 23:16:12,725 - INFO - Skipped (exists): yellow_tripdata_2021-09.parquet
+2026-08-03 23:16:12,757 - INFO - Skipped (exists): yellow_tripdata_2021-10.parquet
+2026-08-03 23:16:12,781 - INFO - Skipped (exists): yellow_tripdata_2021-11.parquet
+2026-08-03 23:16:12,856 - INFO - Skipped (exists): yellow_tripdata_2021-12.parquet
+2026-08-03 23:16:12,885 - INFO - Skipped (exists): yellow_tripdata_2022-01.parquet
+2026-08-03 23:16:12,911 - INFO - Skipped (exists): yellow_tripdata_2022-02.parquet
+2026-08-03 23:16:12,954 - INFO - Skipped (exists): yellow_tripdata_2022-03.parquet
+2026-08-03 23:16:12,963 - INFO - Skipped (exists): yellow_tripdata_2022-04.parquet
+2026-08-03 23:16:12,994 - INFO - Skipped (exists): yellow_tripdata_2022-05.parquet
+2026-08-03 23:16:13,002 - INFO - Skipped (exists): yellow_tripdata_2022-06.parquet
+2026-08-03 23:16:13,034 - INFO - Skipped (exists): yellow_tripdata_2022-07.parquet
+2026-08-03 23:16:13,041 - INFO - Skipped (exists): yellow_tripdata_2022-08.parquet
+2026-08-03 23:16:13,043 - INFO - Skipped (exists): yellow_tripdata_2022-09.parquet
+2026-08-03 23:16:13,073 - INFO - Skipped (exists): yellow_tripdata_2022-10.parquet
+2026-08-03 23:16:13,081 - INFO - Skipped (exists): yellow_tripdata_2022-11.parquet
+2026-08-03 23:16:13,102 - INFO - Skipped (exists): yellow_tripdata_2022-12.parquet
+2026-08-03 23:16:13,139 - INFO - Skipped (exists): yellow_tripdata_2023-01.parquet
+2026-08-03 23:16:13,148 - INFO - Skipped (exists): yellow_tripdata_2023-02.parquet
+2026-08-03 23:16:13,170 - INFO - Skipped (exists): yellow_tripdata_2023-03.parquet
+2026-08-03 23:16:13,201 - INFO - Skipped (exists): yellow_tripdata_2023-04.parquet
+2026-08-03 23:16:13,243 - INFO - Skipped (exists): yellow_tripdata_2023-06.parquet
+2026-08-03 23:16:13,205 - INFO - Skipped (exists): yellow_tripdata_2023-05.parquet
+2026-08-03 23:16:13,247 - INFO - Skipped (exists): yellow_tripdata_2023-07.parquet
+2026-08-03 23:16:13,280 - INFO - Skipped (exists): yellow_tripdata_2023-08.parquet
+2026-08-03 23:16:13,286 - INFO - Skipped (exists): yellow_tripdata_2023-09.parquet
+2026-08-03 23:16:13,336 - INFO - Skipped (exists): yellow_tripdata_2023-10.parquet
+2026-08-03 23:16:13,385 - INFO - Skipped (exists): yellow_tripdata_2023-11.parquet
+2026-08-03 23:16:13,392 - INFO - Skipped (exists): yellow_tripdata_2023-12.parquet
+2026-08-03 23:16:13,400 - INFO - Skipped (exists): yellow_tripdata_2024-01.parquet
+2026-08-03 23:16:13,423 - INFO - Skipped (exists): yellow_tripdata_2024-02.parquet
+2026-08-03 23:16:13,453 - INFO - Skipped (exists): yellow_tripdata_2024-03.parquet
+2026-08-03 23:16:13,460 - INFO - Skipped (exists): yellow_tripdata_2024-04.parquet
+2026-08-03 23:16:13,499 - INFO - Skipped (exists): yellow_tripdata_2024-05.parquet
+2026-08-03 23:16:13,504 - INFO - Skipped (exists): yellow_tripdata_2024-06.parquet
+2026-08-03 23:16:13,554 - INFO - Skipped (exists): yellow_tripdata_2024-07.parquet
+2026-08-03 23:16:13,594 - INFO - Skipped (exists): yellow_tripdata_2024-08.parquet
+2026-08-03 23:16:13,626 - INFO - Skipped (exists): yellow_tripdata_2024-09.parquet
+2026-08-03 23:16:13,656 - INFO - Skipped (exists): yellow_tripdata_2024-10.parquet
+2026-08-03 23:16:13,686 - INFO - Skipped (exists): yellow_tripdata_2024-11.parquet
+2026-08-03 23:16:13,728 - INFO - Skipped (exists): yellow_tripdata_2024-12.parquet
+2026-08-03 23:16:13,730 - INFO - Skipped (exists): yellow_tripdata_2025-01.parquet
+2026-08-03 23:16:13,736 - INFO - Skipped (exists): yellow_tripdata_2025-02.parquet
+2026-08-03 23:16:13,763 - INFO - Skipped (exists): yellow_tripdata_2025-03.parquet
+2026-08-03 23:16:13,771 - INFO - Skipped (exists): yellow_tripdata_2025-04.parquet
+2026-08-03 23:16:13,801 - INFO - Skipped (exists): yellow_tripdata_2025-05.parquet
+2026-08-03 23:16:13,807 - INFO - Skipped (exists): yellow_tripdata_2025-06.parquet
+2026-08-03 23:16:13,813 - INFO - Skipped (exists): yellow_tripdata_2025-07.parquet
+2026-08-03 23:16:13,847 - INFO - Skipped (exists): yellow_tripdata_2025-08.parquet
+2026-08-03 23:16:13,853 - INFO - Skipped (exists): yellow_tripdata_2025-09.parquet
+2026-08-03 23:16:13,886 - INFO - Skipped (exists): yellow_tripdata_2025-10.parquet
+2026-08-03 23:16:13,892 - INFO - Skipped (exists): yellow_tripdata_2025-11.parquet
+2026-08-03 23:16:13,927 - INFO - Skipped (exists): yellow_tripdata_2025-12.parquet
+2026-08-03 23:16:13,932 - INFO - Skipped (exists): yellow_tripdata_2026-01.parquet
+2026-08-03 23:16:13,935 - INFO - Skipped (exists): yellow_tripdata_2026-02.parquet
+2026-08-03 23:16:13,967 - INFO - Skipped (exists): yellow_tripdata_2026-03.parquet
+2026-08-03 23:16:13,975 - INFO - Skipped (exists): yellow_tripdata_2026-04.parquet
+2026-08-03 23:16:14,010 - INFO - Skipped (exists): yellow_tripdata_2026-05.parquet
+2026-08-03 23:16:14,010 - INFO - Attempting: yellow_tripdata_2026-06.parquet
+2026-08-03 23:16:14,015 - INFO - Attempting: yellow_tripdata_2026-07.parquet
+2026-08-03 23:16:14,015 - INFO - Attempting: yellow_tripdata_2026-08.parquet
+2026-08-03 23:16:14,022 - INFO - Attempting: green_tripdata_2000-01.parquet
+2026-08-03 23:16:14,921 - WARNING - Skipped (not found): yellow_tripdata_2026-06.parquet
+2026-08-03 23:16:14,944 - WARNING - Skipped (not found): yellow_tripdata_2026-07.parquet
+2026-08-03 23:16:15,014 - INFO - Attempting: green_tripdata_2000-02.parquet
+2026-08-03 23:16:15,122 - INFO - Attempting: green_tripdata_2000-03.parquet
+2026-08-03 23:16:15,387 - WARNING - Skipped (not found): yellow_tripdata_2026-08.parquet
+2026-08-03 23:16:15,474 - INFO - Attempting: green_tripdata_2000-04.parquet
+2026-08-03 23:16:16,031 - WARNING - Skipped (not found): green_tripdata_2000-01.parquet
+2026-08-03 23:16:16,045 - INFO - Attempting: green_tripdata_2000-05.parquet
+2026-08-03 23:16:16,521 - WARNING - Skipped (not found): green_tripdata_2000-02.parquet
+2026-08-03 23:16:16,537 - INFO - Attempting: green_tripdata_2000-06.parquet
+2026-08-03 23:16:16,795 - WARNING - Skipped (not found): green_tripdata_2000-03.parquet
+2026-08-03 23:16:16,811 - INFO - Attempting: green_tripdata_2000-07.parquet
+2026-08-03 23:16:17,379 - WARNING - Skipped (not found): green_tripdata_2000-04.parquet
+2026-08-03 23:16:17,444 - INFO - Attempting: green_tripdata_2000-08.parquet
+2026-08-03 23:16:18,170 - WARNING - Skipped (not found): green_tripdata_2000-05.parquet
+2026-08-03 23:16:18,223 - INFO - Attempting: green_tripdata_2000-09.parquet
+2026-08-03 23:16:18,503 - WARNING - Skipped (not found): green_tripdata_2000-06.parquet
+2026-08-03 23:16:18,586 - INFO - Attempting: green_tripdata_2000-10.parquet
+2026-08-03 23:16:19,228 - WARNING - Skipped (not found): green_tripdata_2000-07.parquet
+2026-08-03 23:16:19,280 - INFO - Attempting: green_tripdata_2000-11.parquet
+2026-08-03 23:16:19,785 - WARNING - Skipped (not found): green_tripdata_2000-08.parquet
+2026-08-03 23:16:19,834 - INFO - Attempting: green_tripdata_2000-12.parquet
+2026-08-03 23:16:20,024 - WARNING - Skipped (not found): green_tripdata_2000-09.parquet
+2026-08-03 23:16:20,113 - INFO - Attempting: green_tripdata_2001-01.parquet
+2026-08-03 23:16:20,521 - WARNING - Skipped (not found): green_tripdata_2000-10.parquet
+2026-08-03 23:16:20,575 - INFO - Attempting: green_tripdata_2001-02.parquet
+2026-08-03 23:16:21,176 - WARNING - Skipped (not found): green_tripdata_2000-11.parquet
+2026-08-03 23:16:21,224 - INFO - Attempting: green_tripdata_2001-03.parquet
+2026-08-03 23:16:21,476 - WARNING - Skipped (not found): green_tripdata_2000-12.parquet
+2026-08-03 23:16:21,536 - INFO - Attempting: green_tripdata_2001-04.parquet
+2026-08-03 23:16:22,268 - WARNING - Skipped (not found): green_tripdata_2001-01.parquet
+2026-08-03 23:16:22,354 - INFO - Attempting: green_tripdata_2001-05.parquet
+2026-08-03 23:16:22,688 - WARNING - Skipped (not found): green_tripdata_2001-02.parquet
+2026-08-03 23:16:22,777 - INFO - Attempting: green_tripdata_2001-06.parquet
+2026-08-03 23:16:23,285 - WARNING - Skipped (not found): green_tripdata_2001-03.parquet
+2026-08-03 23:16:23,325 - INFO - Attempting: green_tripdata_2001-07.parquet
+2026-08-03 23:16:23,549 - WARNING - Skipped (not found): green_tripdata_2001-04.parquet
+2026-08-03 23:16:23,613 - INFO - Attempting: green_tripdata_2001-08.parquet
+2026-08-03 23:16:24,316 - WARNING - Skipped (not found): green_tripdata_2001-05.parquet
+2026-08-03 23:16:24,391 - INFO - Attempting: green_tripdata_2001-09.parquet
+2026-08-03 23:16:24,822 - WARNING - Skipped (not found): green_tripdata_2001-06.parquet
+2026-08-03 23:16:24,917 - INFO - Attempting: green_tripdata_2001-10.parquet
+2026-08-03 23:16:25,180 - WARNING - Skipped (not found): green_tripdata_2001-07.parquet
+2026-08-03 23:16:25,282 - INFO - Attempting: green_tripdata_2001-11.parquet
+2026-08-03 23:16:25,807 - WARNING - Skipped (not found): green_tripdata_2001-08.parquet
+2026-08-03 23:16:25,849 - INFO - Attempting: green_tripdata_2001-12.parquet
+2026-08-03 23:16:26,090 - WARNING - Skipped (not found): green_tripdata_2001-09.parquet
+2026-08-03 23:16:26,153 - INFO - Attempting: green_tripdata_2002-01.parquet
+2026-08-03 23:16:26,711 - WARNING - Skipped (not found): green_tripdata_2001-10.parquet
+2026-08-03 23:16:26,722 - INFO - Attempting: green_tripdata_2002-02.parquet
+2026-08-03 23:16:27,079 - WARNING - Skipped (not found): green_tripdata_2001-11.parquet
+2026-08-03 23:16:27,174 - INFO - Attempting: green_tripdata_2002-03.parquet
+2026-08-03 23:16:27,510 - WARNING - Skipped (not found): green_tripdata_2001-12.parquet
+2026-08-03 23:16:27,560 - INFO - Attempting: green_tripdata_2002-04.parquet
+2026-08-03 23:16:28,075 - WARNING - Skipped (not found): green_tripdata_2002-01.parquet
+2026-08-03 23:16:28,166 - INFO - Attempting: green_tripdata_2002-05.parquet
+2026-08-03 23:16:28,899 - WARNING - Skipped (not found): green_tripdata_2002-02.parquet
+2026-08-03 23:16:29,040 - INFO - Attempting: green_tripdata_2002-06.parquet
+2026-08-03 23:16:29,272 - WARNING - Skipped (not found): green_tripdata_2002-03.parquet
+2026-08-03 23:16:29,371 - INFO - Attempting: green_tripdata_2002-07.parquet
+2026-08-03 23:16:29,788 - WARNING - Skipped (not found): green_tripdata_2002-04.parquet
+2026-08-03 23:16:29,901 - INFO - Attempting: green_tripdata_2002-08.parquet
+2026-08-03 23:16:30,326 - WARNING - Skipped (not found): green_tripdata_2002-05.parquet
+2026-08-03 23:16:30,460 - INFO - Attempting: green_tripdata_2002-09.parquet
+2026-08-03 23:16:30,681 - WARNING - Skipped (not found): green_tripdata_2002-06.parquet
+2026-08-03 23:16:30,791 - INFO - Attempting: green_tripdata_2002-10.parquet
+2026-08-03 23:16:31,443 - WARNING - Skipped (not found): green_tripdata_2002-07.parquet
+2026-08-03 23:16:31,543 - INFO - Attempting: green_tripdata_2002-11.parquet
+2026-08-03 23:16:31,650 - WARNING - Skipped (not found): green_tripdata_2002-08.parquet
+2026-08-03 23:16:31,787 - INFO - Attempting: green_tripdata_2002-12.parquet
+2026-08-03 23:16:32,449 - WARNING - Skipped (not found): green_tripdata_2002-09.parquet
+2026-08-03 23:16:32,560 - INFO - Attempting: green_tripdata_2003-01.parquet
+2026-08-03 23:16:32,895 - WARNING - Skipped (not found): green_tripdata_2002-10.parquet
+2026-08-03 23:16:33,004 - INFO - Attempting: green_tripdata_2003-02.parquet
+2026-08-03 23:16:33,175 - WARNING - Skipped (not found): green_tripdata_2002-11.parquet
+2026-08-03 23:16:33,287 - INFO - Attempting: green_tripdata_2003-03.parquet
+2026-08-03 23:16:34,022 - WARNING - Skipped (not found): green_tripdata_2002-12.parquet
+2026-08-03 23:16:34,119 - INFO - Attempting: green_tripdata_2003-04.parquet
+2026-08-03 23:16:34,251 - WARNING - Skipped (not found): green_tripdata_2003-01.parquet
+2026-08-03 23:16:34,352 - INFO - Attempting: green_tripdata_2003-05.parquet
+2026-08-03 23:16:35,006 - WARNING - Skipped (not found): green_tripdata_2003-02.parquet
+2026-08-03 23:16:35,175 - INFO - Attempting: green_tripdata_2003-06.parquet
+2026-08-03 23:16:35,281 - WARNING - Skipped (not found): green_tripdata_2003-03.parquet
+2026-08-03 23:16:35,366 - INFO - Attempting: green_tripdata_2003-07.parquet
+2026-08-03 23:16:35,740 - WARNING - Skipped (not found): green_tripdata_2003-04.parquet
+2026-08-03 23:16:35,859 - INFO - Attempting: green_tripdata_2003-08.parquet
+2026-08-03 23:16:36,147 - WARNING - Skipped (not found): green_tripdata_2003-05.parquet
+2026-08-03 23:16:36,248 - INFO - Attempting: green_tripdata_2003-09.parquet
+2026-08-03 23:16:36,733 - WARNING - Skipped (not found): green_tripdata_2003-06.parquet
+2026-08-03 23:16:36,835 - INFO - Attempting: green_tripdata_2003-10.parquet
+2026-08-03 23:16:37,132 - WARNING - Skipped (not found): green_tripdata_2003-07.parquet
+2026-08-03 23:16:37,147 - INFO - Attempting: green_tripdata_2003-11.parquet
+2026-08-03 23:16:37,448 - WARNING - Skipped (not found): green_tripdata_2003-08.parquet
+2026-08-03 23:16:37,470 - INFO - Attempting: green_tripdata_2003-12.parquet
+2026-08-03 23:16:37,879 - WARNING - Skipped (not found): green_tripdata_2003-09.parquet
+2026-08-03 23:16:37,898 - INFO - Attempting: green_tripdata_2004-01.parquet
+2026-08-03 23:16:38,449 - WARNING - Skipped (not found): green_tripdata_2003-10.parquet
+2026-08-03 23:16:38,463 - INFO - Attempting: green_tripdata_2004-02.parquet
+2026-08-03 23:16:39,015 - WARNING - Skipped (not found): green_tripdata_2003-11.parquet
+2026-08-03 23:16:39,033 - INFO - Attempting: green_tripdata_2004-03.parquet
+2026-08-03 23:16:39,371 - WARNING - Skipped (not found): green_tripdata_2003-12.parquet
+2026-08-03 23:16:39,395 - INFO - Attempting: green_tripdata_2004-04.parquet
+2026-08-03 23:16:39,847 - WARNING - Skipped (not found): green_tripdata_2004-01.parquet
+2026-08-03 23:16:39,881 - INFO - Attempting: green_tripdata_2004-05.parquet
+2026-08-03 23:16:40,534 - WARNING - Skipped (not found): green_tripdata_2004-02.parquet
+2026-08-03 23:16:40,551 - INFO - Attempting: green_tripdata_2004-06.parquet
+2026-08-03 23:16:40,767 - WARNING - Skipped (not found): green_tripdata_2004-03.parquet
+2026-08-03 23:16:40,768 - INFO - Attempting: green_tripdata_2004-07.parquet
+2026-08-03 23:16:41,310 - WARNING - Skipped (not found): green_tripdata_2004-04.parquet
+2026-08-03 23:16:41,311 - INFO - Attempting: green_tripdata_2004-08.parquet
+2026-08-03 23:16:41,706 - WARNING - Skipped (not found): green_tripdata_2004-05.parquet
+2026-08-03 23:16:41,707 - INFO - Attempting: green_tripdata_2004-09.parquet
+2026-08-03 23:16:42,421 - WARNING - Skipped (not found): green_tripdata_2004-06.parquet
+2026-08-03 23:16:42,423 - INFO - Attempting: green_tripdata_2004-10.parquet
+2026-08-03 23:16:43,193 - WARNING - Skipped (not found): green_tripdata_2004-07.parquet
+2026-08-03 23:16:43,199 - INFO - Attempting: green_tripdata_2004-11.parquet
+2026-08-03 23:16:43,350 - WARNING - Skipped (not found): green_tripdata_2004-08.parquet
+2026-08-03 23:16:43,431 - INFO - Attempting: green_tripdata_2004-12.parquet
+2026-08-03 23:16:43,770 - WARNING - Skipped (not found): green_tripdata_2004-09.parquet
+2026-08-03 23:16:43,772 - INFO - Attempting: green_tripdata_2005-01.parquet
+2026-08-03 23:16:44,305 - WARNING - Skipped (not found): green_tripdata_2004-10.parquet
+2026-08-03 23:16:44,311 - INFO - Attempting: green_tripdata_2005-02.parquet
+2026-08-03 23:16:44,765 - WARNING - Skipped (not found): green_tripdata_2004-11.parquet
+2026-08-03 23:16:44,768 - INFO - Attempting: green_tripdata_2005-03.parquet
+2026-08-03 23:16:45,380 - WARNING - Skipped (not found): green_tripdata_2004-12.parquet
+2026-08-03 23:16:45,382 - INFO - Attempting: green_tripdata_2005-04.parquet
+2026-08-03 23:16:45,935 - WARNING - Skipped (not found): green_tripdata_2005-01.parquet
+2026-08-03 23:16:45,937 - INFO - Attempting: green_tripdata_2005-05.parquet
+2026-08-03 23:16:46,260 - WARNING - Skipped (not found): green_tripdata_2005-02.parquet
+2026-08-03 23:16:46,284 - INFO - Attempting: green_tripdata_2005-06.parquet
+2026-08-03 23:16:46,983 - WARNING - Skipped (not found): green_tripdata_2005-03.parquet
+2026-08-03 23:16:47,019 - INFO - Attempting: green_tripdata_2005-07.parquet
+2026-08-03 23:16:47,412 - WARNING - Skipped (not found): green_tripdata_2005-04.parquet
+2026-08-03 23:16:47,510 - INFO - Attempting: green_tripdata_2005-08.parquet
+2026-08-03 23:16:48,258 - WARNING - Skipped (not found): green_tripdata_2005-05.parquet
+2026-08-03 23:16:48,583 - INFO - Attempting: green_tripdata_2005-09.parquet
+2026-08-03 23:16:48,720 - WARNING - Skipped (not found): green_tripdata_2005-06.parquet
+2026-08-03 23:16:48,786 - INFO - Attempting: green_tripdata_2005-10.parquet
+2026-08-03 23:16:48,977 - WARNING - Skipped (not found): green_tripdata_2005-07.parquet
+2026-08-03 23:16:49,191 - INFO - Attempting: green_tripdata_2005-11.parquet
+2026-08-03 23:16:49,594 - WARNING - Skipped (not found): green_tripdata_2005-08.parquet
+2026-08-03 23:16:49,637 - INFO - Attempting: green_tripdata_2005-12.parquet
+2026-08-03 23:16:50,053 - WARNING - Skipped (not found): green_tripdata_2005-09.parquet
+2026-08-03 23:16:50,180 - INFO - Attempting: green_tripdata_2006-01.parquet
+2026-08-03 23:16:50,312 - WARNING - Skipped (not found): green_tripdata_2005-10.parquet
+2026-08-03 23:16:50,315 - INFO - Attempting: green_tripdata_2006-02.parquet
+2026-08-03 23:16:50,763 - WARNING - Skipped (not found): green_tripdata_2005-11.parquet
+2026-08-03 23:16:50,766 - INFO - Attempting: green_tripdata_2006-03.parquet
+2026-08-03 23:16:51,449 - WARNING - Skipped (not found): green_tripdata_2005-12.parquet
+2026-08-03 23:16:51,569 - INFO - Attempting: green_tripdata_2006-04.parquet
+2026-08-03 23:16:51,875 - WARNING - Skipped (not found): green_tripdata_2006-01.parquet
+2026-08-03 23:16:51,879 - INFO - Attempting: green_tripdata_2006-05.parquet
+2026-08-03 23:16:52,297 - WARNING - Skipped (not found): green_tripdata_2006-02.parquet
+2026-08-03 23:16:52,300 - INFO - Attempting: green_tripdata_2006-06.parquet
+2026-08-03 23:16:52,840 - WARNING - Skipped (not found): green_tripdata_2006-03.parquet
+2026-08-03 23:16:52,842 - INFO - Attempting: green_tripdata_2006-07.parquet
+2026-08-03 23:16:53,413 - WARNING - Skipped (not found): green_tripdata_2006-04.parquet
+2026-08-03 23:16:53,417 - INFO - Attempting: green_tripdata_2006-08.parquet
+2026-08-03 23:16:53,865 - WARNING - Skipped (not found): green_tripdata_2006-05.parquet
+2026-08-03 23:16:53,886 - INFO - Attempting: green_tripdata_2006-09.parquet
+2026-08-03 23:16:54,233 - WARNING - Skipped (not found): green_tripdata_2006-06.parquet
+2026-08-03 23:16:54,262 - INFO - Attempting: green_tripdata_2006-10.parquet
+2026-08-03 23:16:54,938 - WARNING - Skipped (not found): green_tripdata_2006-07.parquet
+2026-08-03 23:16:54,944 - INFO - Attempting: green_tripdata_2006-11.parquet
+2026-08-03 23:16:55,343 - WARNING - Skipped (not found): green_tripdata_2006-08.parquet
+2026-08-03 23:16:55,358 - INFO - Attempting: green_tripdata_2006-12.parquet
+2026-08-03 23:16:55,915 - WARNING - Skipped (not found): green_tripdata_2006-09.parquet
+2026-08-03 23:16:55,930 - INFO - Attempting: green_tripdata_2007-01.parquet
+2026-08-03 23:16:56,304 - WARNING - Skipped (not found): green_tripdata_2006-10.parquet
+2026-08-03 23:16:56,308 - INFO - Attempting: green_tripdata_2007-02.parquet
+2026-08-03 23:16:56,793 - WARNING - Skipped (not found): green_tripdata_2006-11.parquet
+2026-08-03 23:16:56,796 - INFO - Attempting: green_tripdata_2007-03.parquet
+2026-08-03 23:16:57,394 - WARNING - Skipped (not found): green_tripdata_2006-12.parquet
+2026-08-03 23:16:57,440 - INFO - Attempting: green_tripdata_2007-04.parquet
+2026-08-03 23:16:57,974 - WARNING - Skipped (not found): green_tripdata_2007-01.parquet
+2026-08-03 23:16:58,011 - INFO - Attempting: green_tripdata_2007-05.parquet
+2026-08-03 23:16:58,334 - WARNING - Skipped (not found): green_tripdata_2007-02.parquet
+2026-08-03 23:16:58,335 - INFO - Attempting: green_tripdata_2007-06.parquet
+2026-08-03 23:16:58,789 - WARNING - Skipped (not found): green_tripdata_2007-03.parquet
+2026-08-03 23:16:58,854 - INFO - Attempting: green_tripdata_2007-07.parquet
+2026-08-03 23:16:59,449 - WARNING - Skipped (not found): green_tripdata_2007-04.parquet
+2026-08-03 23:16:59,454 - INFO - Attempting: green_tripdata_2007-08.parquet
+2026-08-03 23:16:59,722 - WARNING - Skipped (not found): green_tripdata_2007-05.parquet
+2026-08-03 23:16:59,724 - INFO - Attempting: green_tripdata_2007-09.parquet
+2026-08-03 23:17:00,544 - WARNING - Skipped (not found): green_tripdata_2007-06.parquet
+2026-08-03 23:17:00,567 - INFO - Attempting: green_tripdata_2007-10.parquet
+2026-08-03 23:17:00,929 - WARNING - Skipped (not found): green_tripdata_2007-07.parquet
+2026-08-03 23:17:00,931 - INFO - Attempting: green_tripdata_2007-11.parquet
+2026-08-03 23:17:01,317 - WARNING - Skipped (not found): green_tripdata_2007-08.parquet
+2026-08-03 23:17:01,319 - INFO - Attempting: green_tripdata_2007-12.parquet
+2026-08-03 23:17:01,896 - WARNING - Skipped (not found): green_tripdata_2007-09.parquet
+2026-08-03 23:17:01,955 - INFO - Attempting: green_tripdata_2008-01.parquet
+2026-08-03 23:17:02,253 - WARNING - Skipped (not found): green_tripdata_2007-10.parquet
+2026-08-03 23:17:02,257 - INFO - Attempting: green_tripdata_2008-02.parquet
+2026-08-03 23:17:02,944 - WARNING - Skipped (not found): green_tripdata_2007-11.parquet
+2026-08-03 23:17:02,965 - INFO - Attempting: green_tripdata_2008-03.parquet
+2026-08-03 23:17:03,484 - WARNING - Skipped (not found): green_tripdata_2007-12.parquet
+2026-08-03 23:17:03,489 - INFO - Attempting: green_tripdata_2008-04.parquet
+2026-08-03 23:17:03,741 - WARNING - Skipped (not found): green_tripdata_2008-01.parquet
+2026-08-03 23:17:03,743 - INFO - Attempting: green_tripdata_2008-05.parquet
+2026-08-03 23:17:04,271 - WARNING - Skipped (not found): green_tripdata_2008-02.parquet
+2026-08-03 23:17:04,274 - INFO - Attempting: green_tripdata_2008-06.parquet
+2026-08-03 23:17:04,764 - WARNING - Skipped (not found): green_tripdata_2008-03.parquet
+2026-08-03 23:17:04,782 - INFO - Attempting: green_tripdata_2008-07.parquet
+2026-08-03 23:17:05,440 - WARNING - Skipped (not found): green_tripdata_2008-04.parquet
+2026-08-03 23:17:05,442 - INFO - Attempting: green_tripdata_2008-08.parquet
+2026-08-03 23:17:05,914 - WARNING - Skipped (not found): green_tripdata_2008-05.parquet
+2026-08-03 23:17:05,939 - INFO - Attempting: green_tripdata_2008-09.parquet
+2026-08-03 23:17:06,222 - WARNING - Skipped (not found): green_tripdata_2008-06.parquet
+2026-08-03 23:17:06,224 - INFO - Attempting: green_tripdata_2008-10.parquet
+2026-08-03 23:17:07,016 - WARNING - Skipped (not found): green_tripdata_2008-07.parquet
+2026-08-03 23:17:07,018 - INFO - Attempting: green_tripdata_2008-11.parquet
+2026-08-03 23:17:07,486 - WARNING - Skipped (not found): green_tripdata_2008-08.parquet
+2026-08-03 23:17:07,489 - INFO - Attempting: green_tripdata_2008-12.parquet
+2026-08-03 23:17:07,801 - WARNING - Skipped (not found): green_tripdata_2008-09.parquet
+2026-08-03 23:17:07,888 - INFO - Attempting: green_tripdata_2009-01.parquet
+2026-08-03 23:17:08,506 - WARNING - Skipped (not found): green_tripdata_2008-10.parquet
+2026-08-03 23:17:08,575 - INFO - Attempting: green_tripdata_2009-02.parquet
+2026-08-03 23:17:08,766 - WARNING - Skipped (not found): green_tripdata_2008-11.parquet
+2026-08-03 23:17:08,786 - INFO - Attempting: green_tripdata_2009-03.parquet
+2026-08-03 23:17:09,512 - WARNING - Skipped (not found): green_tripdata_2008-12.parquet
+2026-08-03 23:17:09,515 - INFO - Attempting: green_tripdata_2009-04.parquet
+2026-08-03 23:17:10,231 - WARNING - Skipped (not found): green_tripdata_2009-01.parquet
+2026-08-03 23:17:10,234 - INFO - Attempting: green_tripdata_2009-05.parquet
+2026-08-03 23:17:10,520 - WARNING - Skipped (not found): green_tripdata_2009-02.parquet
+2026-08-03 23:17:10,561 - INFO - Attempting: green_tripdata_2009-06.parquet
+2026-08-03 23:17:10,870 - WARNING - Skipped (not found): green_tripdata_2009-03.parquet
+2026-08-03 23:17:10,885 - INFO - Attempting: green_tripdata_2009-07.parquet
+2026-08-03 23:17:11,525 - WARNING - Skipped (not found): green_tripdata_2009-04.parquet
+2026-08-03 23:17:11,597 - INFO - Attempting: green_tripdata_2009-08.parquet
+2026-08-03 23:17:11,696 - WARNING - Skipped (not found): green_tripdata_2009-05.parquet
+2026-08-03 23:17:11,698 - INFO - Attempting: green_tripdata_2009-09.parquet
+2026-08-03 23:17:12,406 - WARNING - Skipped (not found): green_tripdata_2009-06.parquet
+2026-08-03 23:17:12,433 - INFO - Attempting: green_tripdata_2009-10.parquet
+2026-08-03 23:17:12,966 - WARNING - Skipped (not found): green_tripdata_2009-07.parquet
+2026-08-03 23:17:12,974 - INFO - Attempting: green_tripdata_2009-11.parquet
+2026-08-03 23:17:13,259 - WARNING - Skipped (not found): green_tripdata_2009-08.parquet
+2026-08-03 23:17:13,261 - INFO - Attempting: green_tripdata_2009-12.parquet
+2026-08-03 23:17:13,910 - WARNING - Skipped (not found): green_tripdata_2009-09.parquet
+2026-08-03 23:17:13,922 - INFO - Attempting: green_tripdata_2010-01.parquet
+2026-08-03 23:17:14,269 - WARNING - Skipped (not found): green_tripdata_2009-10.parquet
+2026-08-03 23:17:14,283 - INFO - Attempting: green_tripdata_2010-02.parquet
+2026-08-03 23:17:14,989 - WARNING - Skipped (not found): green_tripdata_2009-11.parquet
+2026-08-03 23:17:15,017 - INFO - Attempting: green_tripdata_2010-03.parquet
+2026-08-03 23:17:15,623 - WARNING - Skipped (not found): green_tripdata_2009-12.parquet
+2026-08-03 23:17:15,631 - INFO - Attempting: green_tripdata_2010-04.parquet
+2026-08-03 23:17:15,967 - WARNING - Skipped (not found): green_tripdata_2010-01.parquet
+2026-08-03 23:17:16,008 - INFO - Attempting: green_tripdata_2010-05.parquet
+2026-08-03 23:17:16,679 - WARNING - Skipped (not found): green_tripdata_2010-02.parquet
+2026-08-03 23:17:16,769 - INFO - Attempting: green_tripdata_2010-06.parquet
+2026-08-03 23:17:17,237 - WARNING - Skipped (not found): green_tripdata_2010-03.parquet
+2026-08-03 23:17:17,317 - INFO - Attempting: green_tripdata_2010-07.parquet
+2026-08-03 23:17:17,552 - WARNING - Skipped (not found): green_tripdata_2010-04.parquet
+2026-08-03 23:17:17,628 - INFO - Attempting: green_tripdata_2010-08.parquet
+2026-08-03 23:17:18,053 - WARNING - Skipped (not found): green_tripdata_2010-05.parquet
+2026-08-03 23:17:18,161 - INFO - Attempting: green_tripdata_2010-09.parquet
+2026-08-03 23:17:18,684 - WARNING - Skipped (not found): green_tripdata_2010-06.parquet
+2026-08-03 23:17:18,785 - INFO - Attempting: green_tripdata_2010-10.parquet
+2026-08-03 23:17:19,183 - WARNING - Skipped (not found): green_tripdata_2010-07.parquet
+2026-08-03 23:17:19,360 - INFO - Attempting: green_tripdata_2010-11.parquet
+2026-08-03 23:17:19,800 - WARNING - Skipped (not found): green_tripdata_2010-08.parquet
+2026-08-03 23:17:19,873 - INFO - Attempting: green_tripdata_2010-12.parquet
+2026-08-03 23:17:20,480 - WARNING - Skipped (not found): green_tripdata_2010-09.parquet
+2026-08-03 23:17:20,623 - INFO - Attempting: green_tripdata_2011-01.parquet
+2026-08-03 23:17:20,829 - WARNING - Skipped (not found): green_tripdata_2010-10.parquet
+2026-08-03 23:17:20,960 - INFO - Attempting: green_tripdata_2011-02.parquet
+2026-08-03 23:17:21,368 - WARNING - Skipped (not found): green_tripdata_2010-11.parquet
+2026-08-03 23:17:21,496 - INFO - Attempting: green_tripdata_2011-03.parquet
+2026-08-03 23:17:22,034 - WARNING - Skipped (not found): green_tripdata_2010-12.parquet
+2026-08-03 23:17:22,154 - INFO - Attempting: green_tripdata_2011-04.parquet
+2026-08-03 23:17:22,436 - WARNING - Skipped (not found): green_tripdata_2011-01.parquet
+2026-08-03 23:17:22,538 - INFO - Attempting: green_tripdata_2011-05.parquet
+2026-08-03 23:17:22,812 - WARNING - Skipped (not found): green_tripdata_2011-02.parquet
+2026-08-03 23:17:22,860 - INFO - Attempting: green_tripdata_2011-06.parquet
+2026-08-03 23:17:23,112 - WARNING - Skipped (not found): green_tripdata_2011-03.parquet
+2026-08-03 23:17:23,136 - INFO - Attempting: green_tripdata_2011-07.parquet
+2026-08-03 23:17:23,207 - WARNING - Skipped (not found): green_tripdata_2011-04.parquet
+2026-08-03 23:17:23,220 - INFO - Attempting: green_tripdata_2011-08.parquet
+2026-08-03 23:17:23,985 - WARNING - Skipped (not found): green_tripdata_2011-05.parquet
+2026-08-03 23:17:23,987 - INFO - Attempting: green_tripdata_2011-09.parquet
+2026-08-03 23:17:24,198 - WARNING - Skipped (not found): green_tripdata_2011-06.parquet
+2026-08-03 23:17:24,204 - INFO - Attempting: green_tripdata_2011-10.parquet
+2026-08-03 23:17:25,250 - WARNING - Skipped (not found): green_tripdata_2011-07.parquet
+2026-08-03 23:17:25,332 - INFO - Attempting: green_tripdata_2011-11.parquet
+2026-08-03 23:17:25,787 - WARNING - Skipped (not found): green_tripdata_2011-08.parquet
+2026-08-03 23:17:25,885 - INFO - Attempting: green_tripdata_2011-12.parquet
+2026-08-03 23:17:26,293 - WARNING - Skipped (not found): green_tripdata_2011-09.parquet
+2026-08-03 23:17:26,402 - INFO - Attempting: green_tripdata_2012-01.parquet
+2026-08-03 23:17:27,022 - WARNING - Skipped (not found): green_tripdata_2011-10.parquet
+2026-08-03 23:17:27,113 - INFO - Attempting: green_tripdata_2012-02.parquet
+2026-08-03 23:17:27,336 - WARNING - Skipped (not found): green_tripdata_2011-11.parquet
+2026-08-03 23:17:27,474 - INFO - Attempting: green_tripdata_2012-03.parquet
+2026-08-03 23:17:27,719 - WARNING - Skipped (not found): green_tripdata_2011-12.parquet
+2026-08-03 23:17:27,778 - INFO - Attempting: green_tripdata_2012-04.parquet
+2026-08-03 23:17:27,958 - WARNING - Skipped (not found): green_tripdata_2012-01.parquet
+2026-08-03 23:17:27,964 - INFO - Attempting: green_tripdata_2012-05.parquet
+2026-08-03 23:17:28,843 - WARNING - Skipped (not found): green_tripdata_2012-02.parquet
+2026-08-03 23:17:28,940 - INFO - Attempting: green_tripdata_2012-06.parquet
+2026-08-03 23:17:29,129 - WARNING - Skipped (not found): green_tripdata_2012-03.parquet
+2026-08-03 23:17:29,217 - INFO - Attempting: green_tripdata_2012-07.parquet
+2026-08-03 23:17:29,835 - WARNING - Skipped (not found): green_tripdata_2012-04.parquet
+2026-08-03 23:17:29,912 - INFO - Attempting: green_tripdata_2012-08.parquet
+2026-08-03 23:17:30,178 - WARNING - Skipped (not found): green_tripdata_2012-05.parquet
+2026-08-03 23:17:30,270 - INFO - Attempting: green_tripdata_2012-09.parquet
+2026-08-03 23:17:30,867 - WARNING - Skipped (not found): green_tripdata_2012-06.parquet
+2026-08-03 23:17:30,959 - INFO - Attempting: green_tripdata_2012-10.parquet
+2026-08-03 23:17:31,143 - WARNING - Skipped (not found): green_tripdata_2012-07.parquet
+2026-08-03 23:17:31,214 - INFO - Attempting: green_tripdata_2012-11.parquet
+2026-08-03 23:17:31,486 - WARNING - Skipped (not found): green_tripdata_2012-08.parquet
+2026-08-03 23:17:31,488 - INFO - Attempting: green_tripdata_2012-12.parquet
+2026-08-03 23:17:32,062 - WARNING - Skipped (not found): green_tripdata_2012-09.parquet
+2026-08-03 23:17:32,202 - INFO - Attempting: green_tripdata_2013-01.parquet
+2026-08-03 23:17:32,598 - WARNING - Skipped (not found): green_tripdata_2012-10.parquet
+2026-08-03 23:17:32,693 - INFO - Attempting: green_tripdata_2013-02.parquet
+2026-08-03 23:17:33,169 - WARNING - Skipped (not found): green_tripdata_2012-11.parquet
+2026-08-03 23:17:33,237 - INFO - Attempting: green_tripdata_2013-03.parquet
+2026-08-03 23:17:33,747 - WARNING - Skipped (not found): green_tripdata_2012-12.parquet
+2026-08-03 23:17:33,856 - INFO - Attempting: green_tripdata_2013-04.parquet
+2026-08-03 23:17:34,204 - WARNING - Skipped (not found): green_tripdata_2013-01.parquet
+2026-08-03 23:17:34,286 - INFO - Attempting: green_tripdata_2013-05.parquet
+2026-08-03 23:17:34,563 - WARNING - Skipped (not found): green_tripdata_2013-02.parquet
+2026-08-03 23:17:34,605 - INFO - Attempting: green_tripdata_2013-06.parquet
+2026-08-03 23:17:34,975 - WARNING - Skipped (not found): green_tripdata_2013-03.parquet
+2026-08-03 23:17:35,092 - INFO - Attempting: green_tripdata_2013-07.parquet
+2026-08-03 23:17:35,811 - WARNING - Skipped (not found): green_tripdata_2013-04.parquet
+2026-08-03 23:17:35,912 - INFO - Attempting: green_tripdata_2013-08.parquet
+2026-08-03 23:17:36,183 - WARNING - Skipped (not found): green_tripdata_2013-05.parquet
+2026-08-03 23:17:36,318 - INFO - Attempting: green_tripdata_2013-09.parquet
+2026-08-03 23:17:36,766 - WARNING - Skipped (not found): green_tripdata_2013-06.parquet
+2026-08-03 23:17:36,861 - INFO - Attempting: green_tripdata_2013-10.parquet
+2026-08-03 23:17:37,500 - WARNING - Skipped (not found): green_tripdata_2013-07.parquet
+2026-08-03 23:17:37,588 - INFO - Attempting: green_tripdata_2013-11.parquet
+2026-08-03 23:17:37,759 - WARNING - Skipped (not found): green_tripdata_2013-08.parquet
+2026-08-03 23:17:37,818 - INFO - Attempting: green_tripdata_2013-12.parquet
+2026-08-03 23:17:37,979 - WARNING - Skipped (not found): green_tripdata_2013-09.parquet
+2026-08-03 23:17:38,033 - INFO - Attempting: green_tripdata_2014-01.parquet
+2026-08-03 23:17:38,567 - WARNING - Skipped (not found): green_tripdata_2013-10.parquet
+2026-08-03 23:17:38,582 - INFO - Attempting: green_tripdata_2014-02.parquet
+2026-08-03 23:17:38,822 - WARNING - Skipped (not found): green_tripdata_2013-11.parquet
+2026-08-03 23:17:38,833 - INFO - Attempting: green_tripdata_2014-03.parquet
+2026-08-03 23:17:39,571 - WARNING - Skipped (not found): green_tripdata_2013-12.parquet
+2026-08-03 23:17:39,601 - INFO - Attempting: green_tripdata_2014-04.parquet
+2026-08-03 23:17:40,153 - WARNING - Skipped (not found): green_tripdata_2014-01.parquet
+2026-08-03 23:17:40,253 - INFO - Attempting: green_tripdata_2014-05.parquet
+2026-08-03 23:17:40,526 - WARNING - Skipped (not found): green_tripdata_2014-02.parquet
+2026-08-03 23:17:41,191 - WARNING - Skipped (not found): green_tripdata_2014-03.parquet
+2026-08-03 23:17:41,671 - WARNING - Skipped (not found): green_tripdata_2014-04.parquet
+2026-08-03 23:17:42,175 - WARNING - Skipped (not found): green_tripdata_2014-05.parquet
+2026-08-03 23:17:42,226 - ERROR - Download timed out after 150s
+2026-08-03 23:17:42,273 - WARNING - Some files may not have completed.
+2026-08-03 23:17:42,307 - INFO - Finished.

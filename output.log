@@ -1,0 +1,9 @@
+2026-08-04 21:39:13,101 - INFO - Starting data engineering pipeline
+2026-08-04 21:39:13,101 - INFO - Mode: NORMAL (skipping existing files)
+2026-08-04 21:39:13,102 - INFO - Data folder: /mnt/external/NYC_TLC/data
+2026-08-04 21:39:13,102 - INFO - Output folder: /mnt/external/NYC_TLC/data/engineered
+2026-08-04 21:39:13,130 - INFO - Found 360 files in /mnt/external/NYC_TLC/data
+2026-08-04 21:39:13,131 - INFO - Processing 360 files. Output: /mnt/external/NYC_TLC/data/engineered
+2026-08-04 21:39:13,131 - INFO - Output format: PARQUET
+2026-08-04 21:39:19,102 - INFO - Loaded fhv_tripdata_2019-01.parquet (23159064 rows)
+2026-08-04 21:39:30,615 - INFO - Engineered features for fhv_tripdata_2019-01.parquet (17 columns)
