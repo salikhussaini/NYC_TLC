@@ -1,5 +1,4 @@
-import pandas as pd
-import numpy as np
+import polars as pl
 import os
 import logging
 import argparse
@@ -58,7 +57,7 @@ TAXI_CONFIG = {
     }
 }
 
-def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
+def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
     """
     Engineer features for taxi data (yellow, green, fhvhv, or fhv).
     
@@ -76,7 +75,6 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
     if taxi_type not in TAXI_CONFIG:
         raise ValueError(f"Unknown taxi type: {taxi_type}. Must be one of {list(TAXI_CONFIG.keys())}")
     
-    df = df.copy()
     config = TAXI_CONFIG[taxi_type]
     
     try:
@@ -91,62 +89,83 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
             raise KeyError(f"Missing required columns: {missing_cols}")
         
         # ===== TEMPORAL FEATURES =====
-        df['pickup_datetime'] = pd.to_datetime(df[config['pickup_col']], errors='coerce')
+        df = df.with_columns(
+            pl.col(config['pickup_col']).str.to_datetime(format=None).alias('pickup_datetime')
+        )
         
         # Dropoff datetime may not exist for FHV
         if config['dropoff_col'] in df.columns:
-            df['dropoff_datetime'] = pd.to_datetime(df[config['dropoff_col']], errors='coerce')
+            df = df.with_columns(
+                pl.col(config['dropoff_col']).str.to_datetime(format=None).alias('dropoff_datetime')
+            )
         else:
-            df['dropoff_datetime'] = pd.NaT
+            df = df.with_columns(
+                pl.lit(None).cast(pl.Datetime('us')).alias('dropoff_datetime')
+            )
         
-        df['pickup_hour'] = df['pickup_datetime'].dt.hour
-        df['pickup_day_of_week'] = df['pickup_datetime'].dt.dayofweek
-        df['pickup_date'] = df['pickup_datetime'].dt.date
-        df['is_weekend'] = df['pickup_day_of_week'].isin([5, 6]).astype(int)
-        df['is_peak_hour'] = df['pickup_hour'].isin(PEAK_HOURS).astype(int)
+        df = df.with_columns(
+            pl.col('pickup_datetime').dt.hour().alias('pickup_hour'),
+            pl.col('pickup_datetime').dt.weekday().alias('pickup_day_of_week'),
+            pl.col('pickup_datetime').dt.date().alias('pickup_date'),
+            pl.col('pickup_day_of_week').is_in([5, 6]).cast(pl.Int32).alias('is_weekend'),
+            pl.col('pickup_hour').is_in(PEAK_HOURS).cast(pl.Int32).alias('is_peak_hour'),
+        )
 
         # ===== TRIP DURATION (only if dropoff exists) =====
         if config['dropoff_col'] in df.columns:
-            df['trip_duration_minutes'] = (df['dropoff_datetime'] - df['pickup_datetime']).dt.total_seconds() / 60
-            df['trip_duration_seconds'] = (df['dropoff_datetime'] - df['pickup_datetime']).dt.total_seconds()
+            df = df.with_columns(
+                ((pl.col('dropoff_datetime') - pl.col('pickup_datetime')).dt.total_seconds() / 60).alias('trip_duration_minutes'),
+                ((pl.col('dropoff_datetime') - pl.col('pickup_datetime')).dt.total_seconds()).alias('trip_duration_seconds'),
+            )
         else:
-            df['trip_duration_minutes'] = np.nan
-            df['trip_duration_seconds'] = np.nan
+            df = df.with_columns(
+                pl.lit(None).cast(pl.Float64).alias('trip_duration_minutes'),
+                pl.lit(None).cast(pl.Float64).alias('trip_duration_seconds'),
+            )
 
         # ===== SPEED & DISTANCE METRICS (only if distance exists) =====
         if config['distance_col'] in df.columns:
-            df['trip_speed_mph'] = np.where(
-                df['trip_duration_minutes'] > 0,
-                (df[config['distance_col']] / df['trip_duration_minutes']) * 60,
-                0
+            df = df.with_columns(
+                pl.when(pl.col('trip_duration_minutes') > 0)
+                    .then((pl.col(config['distance_col']) / pl.col('trip_duration_minutes')) * 60)
+                    .otherwise(0)
+                    .alias('trip_speed_mph'),
             )
-            df['distance_category'] = pd.cut(df[config['distance_col']], 
-                                             bins=[0, 2, 5, 10, 100], 
-                                             labels=['Short', 'Medium', 'Long', 'Very Long'])
+            df = df.with_columns(
+                pl.cut(
+                    pl.col(config['distance_col']),
+                    bins=[0, 2, 5, 10, 100],
+                    labels=['Short', 'Medium', 'Long', 'Very Long']
+                ).alias('distance_category')
+            )
         else:
-            df['trip_speed_mph'] = np.nan
-            df['distance_category'] = np.nan
+            df = df.with_columns(
+                pl.lit(None).cast(pl.Float64).alias('trip_speed_mph'),
+                pl.lit(None).cast(pl.Utf8).alias('distance_category'),
+            )
 
         # ===== TAXI-TYPE SPECIFIC FEATURES =====
         if taxi_type == 'yellow':
-            _engineer_yellow_features(df)
+            df = _engineer_yellow_features(df)
         elif taxi_type == 'green':
-            _engineer_green_features(df)
+            df = _engineer_green_features(df)
         elif taxi_type == 'fhvhv':
-            _engineer_fhvhv_features(df)
+            df = _engineer_fhvhv_features(df)
         elif taxi_type == 'fhv':
-            _engineer_fhv_features(df)
+            df = _engineer_fhv_features(df)
 
         # ===== COMMON FINANCIAL METRICS =====
-        _engineer_financial_metrics(df, taxi_type, config)
+        df = _engineer_financial_metrics(df, taxi_type, config)
 
         # ===== LOCATION FEATURES =====
         if 'PULocationID' in df.columns and 'DOLocationID' in df.columns:
-            df['is_airport_trip'] = ((df['PULocationID'].isin(AIRPORT_LOCATION_IDS)) | 
-                                     (df['DOLocationID'].isin(AIRPORT_LOCATION_IDS))).astype(int)
+            df = df.with_columns(
+                (pl.col('PULocationID').is_in(AIRPORT_LOCATION_IDS) | 
+                 pl.col('DOLocationID').is_in(AIRPORT_LOCATION_IDS)).cast(pl.Int32).alias('is_airport_trip')
+            )
 
         # ===== DATA QUALITY FLAGS =====
-        _engineer_quality_flags(df, taxi_type, config)
+        df = _engineer_quality_flags(df, taxi_type, config)
 
         return df
     
@@ -155,66 +174,84 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
         raise
 
 
-def _engineer_fhv_features(df: pd.DataFrame) -> None:
+def _engineer_fhv_features(df: pl.DataFrame) -> pl.DataFrame:
     """Engineer standard FHV (non-FHVHV) specific features."""
     # FHV has minimal supplemental columns
     # Mainly just pickup/dropoff locations and basic info
     # Check for dispatching info if it exists
     if 'on_scene_datetime' in df.columns:
-        df['on_scene_datetime'] = pd.to_datetime(df['on_scene_datetime'], errors='coerce')
+        df = df.with_columns(
+            pl.col('on_scene_datetime').str.to_datetime()
+        )
+    return df
 
 
-def _engineer_yellow_features(df: pd.DataFrame) -> None:
+def _engineer_yellow_features(df: pl.DataFrame) -> pl.DataFrame:
     """Engineer yellow taxi specific features."""
     # Yellow has 'extra' field and airport fee
     if 'fare_amount' in df.columns and 'passenger_count' in df.columns:
-        df['per_passenger_fare'] = df['fare_amount'] / df['passenger_count'].replace(0, 1)
-        df['per_passenger_cost'] = df['total_amount'] / df['passenger_count'].replace(0, 1)
+        df = df.with_columns(
+            (pl.col('fare_amount') / pl.col('passenger_count').fill_null(1)).alias('per_passenger_fare'),
+            (pl.col('total_amount') / pl.col('passenger_count').fill_null(1)).alias('per_passenger_cost'),
+        )
+    return df
 
 
-def _engineer_green_features(df: pd.DataFrame) -> None:
+def _engineer_green_features(df: pl.DataFrame) -> pl.DataFrame:
     """Engineer green taxi specific features."""
     if 'trip_type' in df.columns:
-        df['trip_type_name'] = df['trip_type'].map({
-            1: 'Street-hail', 
-            2: 'Dispatch'
-        })
+        df = df.with_columns(
+            pl.when(pl.col('trip_type') == 1).then(pl.lit('Street-hail'))
+            .when(pl.col('trip_type') == 2).then(pl.lit('Dispatch'))
+            .otherwise(None)
+            .alias('trip_type_name')
+        )
     
     if 'fare_amount' in df.columns and 'passenger_count' in df.columns:
-        df['per_passenger_fare'] = df['fare_amount'] / df['passenger_count'].replace(0, 1)
-        df['per_passenger_cost'] = df['total_amount'] / df['passenger_count'].replace(0, 1)
+        df = df.with_columns(
+            (pl.col('fare_amount') / pl.col('passenger_count').fill_null(1)).alias('per_passenger_fare'),
+            (pl.col('total_amount') / pl.col('passenger_count').fill_null(1)).alias('per_passenger_cost'),
+        )
+    return df
 
 
-def _engineer_fhvhv_features(df: pd.DataFrame) -> None:
+def _engineer_fhvhv_features(df: pl.DataFrame) -> pl.DataFrame:
     """Engineer FHVHV (for-hire high-volume) specific features."""
     # Request response time metrics
     if 'request_datetime' in df.columns and 'on_scene_datetime' in df.columns:
-        df['request_datetime'] = pd.to_datetime(df['request_datetime'], errors='coerce')
-        df['on_scene_datetime'] = pd.to_datetime(df['on_scene_datetime'], errors='coerce')
-        df['request_to_pickup_minutes'] = (df['pickup_datetime'] - df['request_datetime']).dt.total_seconds() / 60
-        df['request_to_onscene_minutes'] = (df['on_scene_datetime'] - df['request_datetime']).dt.total_seconds() / 60
+        df = df.with_columns(
+            pl.col('request_datetime').str.to_datetime().alias('request_datetime'),
+            pl.col('on_scene_datetime').str.to_datetime().alias('on_scene_datetime'),
+            ((pl.col('pickup_datetime') - pl.col('request_datetime')).dt.total_seconds() / 60).alias('request_to_pickup_minutes'),
+            ((pl.col('on_scene_datetime') - pl.col('request_datetime')).dt.total_seconds() / 60).alias('request_to_onscene_minutes'),
+        )
 
     # Driver performance metrics
     if 'driver_pay' in df.columns and 'trip_miles' in df.columns:
-        df['driver_earnings'] = df['driver_pay'].fillna(0)
-        df['driver_earnings_per_mile'] = np.where(
-            df['trip_miles'] > 0,
-            df['driver_earnings'] / df['trip_miles'],
-            0
+        df = df.with_columns(
+            pl.col('driver_pay').fill_null(0).alias('driver_earnings'),
         )
-        df['driver_earnings_per_minute'] = np.where(
-            df['trip_duration_minutes'] > 0,
-            df['driver_earnings'] / df['trip_duration_minutes'],
-            0
+        df = df.with_columns(
+            pl.when(pl.col('trip_miles') > 0)
+                .then(pl.col('driver_earnings') / pl.col('trip_miles'))
+                .otherwise(0)
+                .alias('driver_earnings_per_mile'),
+            pl.when(pl.col('trip_duration_minutes') > 0)
+                .then(pl.col('driver_earnings') / pl.col('trip_duration_minutes'))
+                .otherwise(0)
+                .alias('driver_earnings_per_minute'),
         )
 
     # Platform commission
     if 'base_passenger_fare' in df.columns and 'driver_pay' in df.columns and 'total_passenger_cost' in df.columns:
-        df['platform_commission'] = df['total_passenger_cost'] - df['driver_earnings']
-        df['commission_percentage'] = np.where(
-            df['total_passenger_cost'] > 0,
-            (df['platform_commission'] / df['total_passenger_cost']) * 100,
-            0
+        df = df.with_columns(
+            (pl.col('total_passenger_cost') - pl.col('driver_earnings')).alias('platform_commission'),
+        )
+        df = df.with_columns(
+            pl.when(pl.col('total_passenger_cost') > 0)
+                .then((pl.col('platform_commission') / pl.col('total_passenger_cost')) * 100)
+                .otherwise(0)
+                .alias('commission_percentage'),
         )
 
     # Special service flags
@@ -223,71 +260,99 @@ def _engineer_fhvhv_features(df: pd.DataFrame) -> None:
     for col in flag_cols:
         if col in df.columns:
             new_col = col.replace('_flag', '')
-            df[f'is_{new_col}'] = (df[col] == 'Y').astype(int)
+            df = df.with_columns(
+                (pl.col(col) == 'Y').cast(pl.Int32).alias(f'is_{new_col}')
+            )
 
-    df['is_accessibility_trip'] = df['is_wav_match'].astype(int) if 'is_wav_match' in df.columns else 0
+    if 'is_wav_match' in df.columns:
+        df = df.with_columns(
+            pl.col('is_wav_match').cast(pl.Int32).alias('is_accessibility_trip')
+        )
+    else:
+        df = df.with_columns(
+            pl.lit(0).cast(pl.Int32).alias('is_accessibility_trip')
+        )
 
     # License type mapping
     if 'hvfhs_license_num' in df.columns:
-        df['license_type'] = df['hvfhs_license_num'].map({
-            'HV0003': 'Uber',
-            'HV0005': 'Lyft',
-            'HV0004': 'Via',
-            'HV0002': 'Juno',
-            'HV0001': 'Uber',
-        }).fillna('Other')
+        df = df.with_columns(
+            pl.when(pl.col('hvfhs_license_num') == 'HV0003').then(pl.lit('Uber'))
+            .when(pl.col('hvfhs_license_num') == 'HV0005').then(pl.lit('Lyft'))
+            .when(pl.col('hvfhs_license_num') == 'HV0004').then(pl.lit('Via'))
+            .when(pl.col('hvfhs_license_num') == 'HV0002').then(pl.lit('Juno'))
+            .when(pl.col('hvfhs_license_num') == 'HV0001').then(pl.lit('Uber'))
+            .otherwise(pl.lit('Other'))
+            .alias('license_type')
+        )
+    return df
 
 
-def _engineer_financial_metrics(df: pd.DataFrame, taxi_type: str, config: Dict) -> None:
+def _engineer_financial_metrics(df: pl.DataFrame, taxi_type: str, config: Dict) -> pl.DataFrame:
     """Engineer common financial metrics."""
     # Skip financial metrics for FHV (likely doesn't have fare/payment data)
     if taxi_type == 'fhv':
-        return
+        return df
     
     if 'fare_amount' not in df.columns:
-        return
+        return df
 
     # Common financial calculations
     if 'total_amount' in df.columns and config['distance_col'] in df.columns:
-        df['cost_per_mile'] = np.where(
-            df[config['distance_col']] > 0,
-            df['total_amount'] / df[config['distance_col']],
-            0
+        df = df.with_columns(
+            pl.when(pl.col(config['distance_col']) > 0)
+                .then(pl.col('total_amount') / pl.col(config['distance_col']))
+                .otherwise(0)
+                .alias('cost_per_mile')
         )
     
     if 'total_amount' in df.columns and 'trip_duration_minutes' in df.columns:
-        df['cost_per_minute'] = np.where(
-            df['trip_duration_minutes'] > 0,
-            df['total_amount'] / df['trip_duration_minutes'],
-            0
+        df = df.with_columns(
+            pl.when(pl.col('trip_duration_minutes') > 0)
+                .then(pl.col('total_amount') / pl.col('trip_duration_minutes'))
+                .otherwise(0)
+                .alias('cost_per_minute')
         )
 
     if 'fare_amount' in df.columns and config['distance_col'] in df.columns:
-        df['revenue_per_mile'] = np.where(
-            df[config['distance_col']] > 0,
-            df['fare_amount'] / df[config['distance_col']],
-            0
+        df = df.with_columns(
+            pl.when(pl.col(config['distance_col']) > 0)
+                .then(pl.col('fare_amount') / pl.col(config['distance_col']))
+                .otherwise(0)
+                .alias('revenue_per_mile')
         )
 
     # Tip percentage
     if 'tip_amount' in df.columns:
-        df['tip_percentage'] = np.where(
-            df['fare_amount'] > 0,
-            (df['tip_amount'] / df['fare_amount']) * 100,
-            0
+        df = df.with_columns(
+            pl.when(pl.col('fare_amount') > 0)
+                .then((pl.col('tip_amount') / pl.col('fare_amount')) * 100)
+                .otherwise(0)
+                .alias('tip_percentage')
         )
 
     # Payment type
     if 'payment_type' in df.columns:
-        df['payment_type_name'] = df['payment_type'].map(PAYMENT_TYPE_MAP)
-        df['is_cash_payment'] = (df['payment_type'] == 2).astype(int)
+        payment_mapping = (
+            pl.when(pl.col('payment_type') == 1).then(pl.lit('Credit Card'))
+            .when(pl.col('payment_type') == 2).then(pl.lit('Cash'))
+            .when(pl.col('payment_type') == 3).then(pl.lit('No Charge'))
+            .when(pl.col('payment_type') == 4).then(pl.lit('Dispute'))
+            .when(pl.col('payment_type') == 5).then(pl.lit('Unknown'))
+            .otherwise(None)
+        )
+        df = df.with_columns(
+            payment_mapping.alias('payment_type_name'),
+            (pl.col('payment_type') == 2).cast(pl.Int32).alias('is_cash_payment'),
+        )
 
     # Surcharge metrics - only for non-fhvhv types
     if taxi_type != 'fhvhv':
-        _calculate_surcharges(df, taxi_type)
+        df = _calculate_surcharges(df, taxi_type)
+    
+    return df
 
 
-def _calculate_surcharges(df: pd.DataFrame, taxi_type: str) -> None:
+def _calculate_surcharges(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
     """Calculate surcharge-related metrics."""
     surcharge_cols = []
     
@@ -299,40 +364,60 @@ def _calculate_surcharges(df: pd.DataFrame, taxi_type: str) -> None:
         surcharge_cols = ['mta_tax', 'tolls_amount', 'improvement_surcharge', 'congestion_surcharge']
         optional_cols = ['cbd_congestion_fee', 'ehail_fee']
     else:
-        return
+        return df
 
     # Filter to only existing columns
     surcharge_cols = [col for col in surcharge_cols if col in df.columns]
     optional_cols = [col for col in optional_cols if col in df.columns]
     
-    if surcharge_cols or optional_cols:
-        df['total_surcharges'] = sum(df[col].fillna(0) if col in optional_cols else df[col] 
-                                     for col in surcharge_cols + optional_cols)
+    all_surcharge_cols = surcharge_cols + optional_cols
+    
+    if all_surcharge_cols:
+        # Sum all surcharge columns (filling nulls with 0)
+        total_surcharges_expr = sum(
+            pl.col(col).fill_null(0) for col in all_surcharge_cols
+        )
+        df = df.with_columns(total_surcharges_expr.alias('total_surcharges'))
         
         if 'fare_amount' in df.columns:
-            df['surcharge_percentage'] = np.where(
-                df['fare_amount'] > 0,
-                (df['total_surcharges'] / df['fare_amount']) * 100,
-                0
+            df = df.with_columns(
+                pl.when(pl.col('fare_amount') > 0)
+                    .then((pl.col('total_surcharges') / pl.col('fare_amount')) * 100)
+                    .otherwise(0)
+                    .alias('surcharge_percentage')
             )
+    
+    return df
 
 
-def _engineer_quality_flags(df: pd.DataFrame, taxi_type: str, config: Dict) -> None:
+def _engineer_quality_flags(df: pl.DataFrame, taxi_type: str, config: Dict) -> pl.DataFrame:
     """Engineer data quality flags."""
     if 'fare_amount' in df.columns:
-        df['zero_fare_flag'] = (df['fare_amount'] == 0).astype(int)
+        df = df.with_columns(
+            (pl.col('fare_amount') == 0).cast(pl.Int32).alias('zero_fare_flag')
+        )
     
     if config['distance_col'] in df.columns:
-        df['zero_distance_flag'] = (df[config['distance_col']] == 0).astype(int)
+        df = df.with_columns(
+            (pl.col(config['distance_col']) == 0).cast(pl.Int32).alias('zero_distance_flag')
+        )
     
-    if 'trip_duration_minutes' in df.columns and not df['trip_duration_minutes'].isna().all():
-        df['negative_duration_flag'] = (df['trip_duration_minutes'] < 0).astype(int)
+    if 'trip_duration_minutes' in df.columns:
+        df = df.with_columns(
+            (pl.col('trip_duration_minutes') < 0).cast(pl.Int32).alias('negative_duration_flag')
+        )
     
-    if 'trip_speed_mph' in df.columns and not df['trip_speed_mph'].isna().all():
-        df['excessive_speed_flag'] = (df['trip_speed_mph'] > 100).astype(int)
+    if 'trip_speed_mph' in df.columns:
+        df = df.with_columns(
+            (pl.col('trip_speed_mph') > 100).cast(pl.Int32).alias('excessive_speed_flag')
+        )
     
     if taxi_type == 'fhvhv' and 'request_to_pickup_minutes' in df.columns:
-        df['negative_request_response'] = (df['request_to_pickup_minutes'] < 0).astype(int)
+        df = df.with_columns(
+            (pl.col('request_to_pickup_minutes') < 0).cast(pl.Int32).alias('negative_request_response')
+        )
+    
+    return df
 
 
 def engineer_yellow(df_yellow):
@@ -374,7 +459,7 @@ def crawl_folder(folder_path: str) -> List[str]:
     return file_list
 
 
-def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pd.DataFrame, str, str]:
+def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pl.DataFrame, str, str]:
     """
     Read and engineer a taxi data file (CSV or Parquet).
     
@@ -383,7 +468,7 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pd
         output_format: Output format ('csv' or 'parquet')
     
     Returns:
-        Tuple of (success: bool, dataframe: pd.DataFrame or None, message: str, output_filename: str)
+        Tuple of (success: bool, dataframe: pl.DataFrame or None, message: str, output_filename: str)
     """
     file_name = os.path.basename(file_path)
     file_ext = os.path.splitext(file_name)[1].lower()
@@ -414,10 +499,10 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pd
         
         # Read file based on extension
         if file_ext == '.csv':
-            df = pd.read_csv(file_path)
+            df = pl.read_csv(file_path)
             base_filename = file_name
         else:  # .parquet
-            df = pd.read_parquet(file_path)
+            df = pl.read_parquet(file_path)
             # Remove .parquet extension for base filename
             base_filename = file_name.replace('.parquet', '')
         
@@ -425,7 +510,7 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pd
         
         # Engineer features
         eng_df = engineer_data(df, taxi_type)
-        logger.info(f"Engineered features for {file_name} ({eng_df.shape[1]} columns)")
+        logger.info(f"Engineered features for {file_name} ({len(eng_df.columns)} columns)")
         
         # Set output filename based on format
         if output_format == 'parquet':
@@ -435,14 +520,8 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pd
         
         return True, eng_df, f"Successfully processed {file_name}", output_filename
     
-    except pd.errors.EmptyDataError:
-        return False, None, f"Empty file: {file_name}", ""
-    except pd.errors.ParserError as e:
-        return False, None, f"Parsing error in {file_name}: {str(e)}", ""
-    except ValueError as e:
-        return False, None, f"Value error in {file_name}: {str(e)}", ""
     except Exception as e:
-        return False, None, f"Unexpected error processing {file_name}: {str(e)}", ""
+        return False, None, f"Error processing {file_name}: {str(e)}", ""
 
 
 def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False, 
@@ -455,7 +534,7 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
         engineer_folder: Output directory for engineered files
         rerun: If True, reprocess all files even if they exist
         output_format: Output format ('csv' or 'parquet')
-        compression: Compression to use ('gzip', 'snappy', 'brotli', etc. for parquet; 'gzip' for csv)
+        compression: Compression to use ('gzip' for csv; 'snappy', 'gzip', 'brotli', 'lz4' for parquet)
     
     Returns:
         Dictionary with processing statistics
@@ -505,9 +584,9 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
             
             # Save based on format
             if output_format == 'parquet':
-                eng_df.to_parquet(output_path, compression=compression or 'snappy', index=False)
+                eng_df.write_parquet(output_path, compression=compression or 'snappy')
             else:  # csv
-                eng_df.to_csv(output_path, index=False, compression=compression)
+                eng_df.write_csv(output_path)
             
             stats['successful'] += 1
             file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
