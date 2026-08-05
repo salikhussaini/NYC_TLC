@@ -374,12 +374,13 @@ def crawl_folder(folder_path: str) -> List[str]:
     return file_list
 
 
-def engineer_files(file_path: str) -> Tuple[bool, pd.DataFrame, str, str]:
+def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pd.DataFrame, str, str]:
     """
     Read and engineer a taxi data file (CSV or Parquet).
     
     Args:
         file_path: Path to the CSV or Parquet file
+        output_format: Output format ('csv' or 'parquet')
     
     Returns:
         Tuple of (success: bool, dataframe: pd.DataFrame or None, message: str, output_filename: str)
@@ -414,17 +415,23 @@ def engineer_files(file_path: str) -> Tuple[bool, pd.DataFrame, str, str]:
         # Read file based on extension
         if file_ext == '.csv':
             df = pd.read_csv(file_path)
-            output_filename = file_name
+            base_filename = file_name
         else:  # .parquet
             df = pd.read_parquet(file_path)
-            # Convert parquet filename to csv for output
-            output_filename = file_name.replace('.parquet', '.csv')
+            # Remove .parquet extension for base filename
+            base_filename = file_name.replace('.parquet', '')
         
         logger.info(f"Loaded {file_name} ({len(df)} rows)")
         
         # Engineer features
         eng_df = engineer_data(df, taxi_type)
         logger.info(f"Engineered features for {file_name} ({eng_df.shape[1]} columns)")
+        
+        # Set output filename based on format
+        if output_format == 'parquet':
+            output_filename = base_filename + '.parquet'
+        else:  # csv
+            output_filename = base_filename + '.csv'
         
         return True, eng_df, f"Successfully processed {file_name}", output_filename
     
@@ -438,7 +445,8 @@ def engineer_files(file_path: str) -> Tuple[bool, pd.DataFrame, str, str]:
         return False, None, f"Unexpected error processing {file_name}: {str(e)}", ""
 
 
-def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False) -> Dict:
+def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False, 
+                 output_format: str = 'csv', compression: Optional[str] = None) -> Dict:
     """
     Process all files and save engineered versions.
     
@@ -446,6 +454,8 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
         file_list: List of file paths to process
         engineer_folder: Output directory for engineered files
         rerun: If True, reprocess all files even if they exist
+        output_format: Output format ('csv' or 'parquet')
+        compression: Compression to use ('gzip', 'snappy', 'brotli', etc. for parquet; 'gzip' for csv)
     
     Returns:
         Dictionary with processing statistics
@@ -465,10 +475,11 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
     
     os.makedirs(engineer_folder, exist_ok=True)
     logger.info(f"Processing {len(file_list)} files. Output: {engineer_folder}")
+    logger.info(f"Output format: {output_format.upper()}" + (f", Compression: {compression}" if compression else ""))
     
     for file_path in file_list:
         file_name = os.path.basename(file_path)
-        success, eng_df, message, output_filename = engineer_files(file_path)
+        success, eng_df, message, output_filename = engineer_files(file_path, output_format=output_format)
         
         if not success:
             if 'non-CSV/Parquet' in message:
@@ -492,9 +503,15 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
             if os.path.exists(output_path):
                 logger.warning(f"Overwriting existing file: {output_path}")
             
-            eng_df.to_csv(output_path, index=False)
+            # Save based on format
+            if output_format == 'parquet':
+                eng_df.to_parquet(output_path, compression=compression or 'snappy', index=False)
+            else:  # csv
+                eng_df.to_csv(output_path, index=False, compression=compression)
+            
             stats['successful'] += 1
-            logger.info(f"Saved engineered data to {output_path}")
+            file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
+            logger.info(f"Saved engineered data to {output_path} ({file_size_mb:.2f} MB)")
         
         except Exception as e:
             stats['failed'] += 1
@@ -518,12 +535,14 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
     return stats
 
 
-def main(rerun: bool = False):
+def main(rerun: bool = False, output_format: str = 'csv', compression: Optional[str] = None):
     """
     Main entry point for data engineering pipeline.
     
     Args:
         rerun: If True, reprocess all files even if engineered versions exist
+        output_format: Output format ('csv' or 'parquet')
+        compression: Compression to use ('gzip' for csv; 'snappy', 'gzip', 'brotli' for parquet)
     """
     try:
         # Define data folders - use absolute path
@@ -551,7 +570,8 @@ def main(rerun: bool = False):
             logger.warning("No files found to process")
             return False
         
-        stats = engineer_all(file_list, engineer_folder, rerun=rerun)
+        stats = engineer_all(file_list, engineer_folder, rerun=rerun, 
+                           output_format=output_format, compression=compression)
         
         # Exit with success/failure code
         if stats['failed'] > 0:
@@ -572,14 +592,21 @@ if __name__ == '__main__':
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python data_engineer.py              # Process CSV & Parquet files (skip existing)
-  python data_engineer.py --rerun      # Reprocess all files (overwrite existing)
+  python data_engineer.py                          # CSV output, no compression
+  python data_engineer.py --format parquet         # Parquet output (faster, smaller)
+  python data_engineer.py --format csv --compress gzip   # CSV with gzip compression
+  python data_engineer.py --format parquet --compress snappy --rerun   # Parquet snappy, reprocess all
 
 Supported file types:
   - yellow_tripdata_*.csv/parquet
   - green_tripdata_*.csv/parquet
   - fhv_tripdata_*.csv/parquet
   - fhvhv_tripdata_*.csv/parquet
+
+Performance notes:
+  - Parquet format is 10-100x faster for large files (23M+ rows)
+  - CSV compression reduces file size by 60-80% but adds processing time
+  - Parquet with snappy compression balances speed and file size
         """
     )
     parser.add_argument(
@@ -587,7 +614,24 @@ Supported file types:
         action='store_true',
         help='Reprocess all files even if engineered versions already exist'
     )
+    parser.add_argument(
+        '--format',
+        choices=['csv', 'parquet'],
+        default='csv',
+        help='Output file format (default: csv)'
+    )
+    parser.add_argument(
+        '--compress',
+        choices=['gzip', 'snappy', 'brotli', 'lz4'],
+        default=None,
+        help='Compression method (gzip for CSV; snappy/gzip/brotli/lz4 for Parquet)'
+    )
     
     args = parser.parse_args()
-    success = main(rerun=args.rerun)
+    
+    # Validate compression for format
+    if args.format == 'csv' and args.compress and args.compress not in ['gzip']:
+        parser.error(f"CSV format only supports 'gzip' compression, got '{args.compress}'")
+    
+    success = main(rerun=args.rerun, output_format=args.format, compression=args.compress)
     exit(0 if success else 1)
