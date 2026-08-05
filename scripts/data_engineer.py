@@ -3,7 +3,7 @@ import numpy as np
 import os
 import logging
 import argparse
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -47,6 +47,13 @@ TAXI_CONFIG = {
         'extra_surcharges': ['sales_tax'],
         'has_trip_type': False,
         'is_fhvhv': True,
+    },
+    'fhv': {
+        'pickup_col': 'pickup_datetime',
+        'dropoff_col': 'dropoff_datetime',
+        'distance_col': 'trip_miles',
+        'extra_surcharges': [],
+        'has_trip_type': False,
     }
 }
 
@@ -330,53 +337,68 @@ def crawl_folder(folder_path: str) -> List[str]:
     return file_list
 
 
-def engineer_files(file_path: str) -> Tuple[bool, pd.DataFrame, str]:
+def engineer_files(file_path: str) -> Tuple[bool, pd.DataFrame, str, str]:
     """
-    Read and engineer a taxi data file.
+    Read and engineer a taxi data file (CSV or Parquet).
     
     Args:
-        file_path: Path to the CSV file
+        file_path: Path to the CSV or Parquet file
     
     Returns:
-        Tuple of (success: bool, dataframe: pd.DataFrame or None, message: str)
+        Tuple of (success: bool, dataframe: pd.DataFrame or None, message: str, output_filename: str)
     """
     file_name = os.path.basename(file_path)
+    file_ext = os.path.splitext(file_name)[1].lower()
     
-    # Determine taxi type
+    # Check if file is CSV or Parquet
+    if file_ext not in ['.csv', '.parquet']:
+        return False, None, f"Skipping non-CSV/Parquet file: {file_name}", ""
+    
+    # Determine taxi type - check in order: 'fhv_' before 'fhvhv' to avoid mismatches
     taxi_type = None
-    for key in TAXI_CONFIG.keys():
-        if key in file_path.lower():
-            taxi_type = key
-            break
+    filename_lower = file_path.lower()
+    
+    # Priority order: fhv_ (but not fhvhv), then fhvhv, then yellow, then green
+    if 'fhv_' in filename_lower and 'fhvhv' not in filename_lower:
+        taxi_type = 'fhv'
+    else:
+        for key in ['fhvhv', 'yellow', 'green']:
+            if key in filename_lower:
+                taxi_type = key
+                break
     
     if not taxi_type:
-        return False, None, f"Could not determine taxi type for: {file_name}"
+        return False, None, f"Could not determine taxi type for: {file_name}", ""
     
     try:
         if not os.path.exists(file_path):
-            return False, None, f"File not found: {file_path}"
+            return False, None, f"File not found: {file_path}", ""
         
-        if not file_path.lower().endswith('.csv'):
-            return False, None, f"Skipping non-CSV file: {file_name}"
+        # Read file based on extension
+        if file_ext == '.csv':
+            df = pd.read_csv(file_path)
+            output_filename = file_name
+        else:  # .parquet
+            df = pd.read_parquet(file_path)
+            # Convert parquet filename to csv for output
+            output_filename = file_name.replace('.parquet', '.csv')
         
-        # Read CSV
-        df = pd.read_csv(file_path)
         logger.info(f"Loaded {file_name} ({len(df)} rows)")
         
         # Engineer features
         eng_df = engineer_data(df, taxi_type)
         logger.info(f"Engineered features for {file_name} ({eng_df.shape[1]} columns)")
         
-        return True, eng_df, f"Successfully processed {file_name}"
+        return True, eng_df, f"Successfully processed {file_name}", output_filename
     
     except pd.errors.EmptyDataError:
-        return False, None, f"Empty CSV file: {file_name}"
+        return False, None, f"Empty file: {file_name}", ""
     except pd.errors.ParserError as e:
-        return False, None, f"CSV parsing error in {file_name}: {str(e)}"
+        return False, None, f"Parsing error in {file_name}: {str(e)}", ""
     except ValueError as e:
-        return False, None, f"Value error in {file_name}: {str(e)}"
+        return False, None, f"Value error in {file_name}: {str(e)}", ""
     except Exception as e:
-        return False, None, f"Unexpected error processing {file_name}: {str(e)}"
+        return False, None, f"Unexpected error processing {file_name}: {str(e)}", ""
 
 
 def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False) -> Dict:
@@ -409,23 +431,23 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
     
     for file_path in file_list:
         file_name = os.path.basename(file_path)
-        output_path = os.path.join(engineer_folder, file_name)
-        
-        # Check if engineered file already exists
-        if os.path.exists(output_path) and not rerun:
-            logger.info(f"Engineered file already exists (skipping): {file_name}")
-            stats['already_exists'] += 1
-            continue
-        
-        success, eng_df, message = engineer_files(file_path)
+        success, eng_df, message, output_filename = engineer_files(file_path)
         
         if not success:
-            if 'non-CSV' in message:
+            if 'non-CSV/Parquet' in message:
                 stats['skipped'] += 1
             else:
                 stats['failed'] += 1
                 stats['errors'].append(message)
             logger.warning(message)
+            continue
+        
+        output_path = os.path.join(engineer_folder, output_filename)
+        
+        # Check if engineered file already exists
+        if os.path.exists(output_path) and not rerun:
+            logger.info(f"Engineered file already exists (skipping): {output_filename}")
+            stats['already_exists'] += 1
             continue
         
         try:
@@ -439,7 +461,7 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
         
         except Exception as e:
             stats['failed'] += 1
-            error_msg = f"Failed to save {file_name}: {str(e)}"
+            error_msg = f"Failed to save {output_filename}: {str(e)}"
             stats['errors'].append(error_msg)
             logger.error(error_msg)
     
@@ -449,7 +471,7 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
     logger.info(f"Newly processed: {stats['successful']}")
     logger.info(f"Already existed (skipped): {stats['already_exists']}")
     logger.info(f"Failed: {stats['failed']}")
-    logger.info(f"Skipped (non-CSV): {stats['skipped']}")
+    logger.info(f"Skipped (non-CSV/Parquet): {stats['skipped']}")
     
     if stats['errors']:
         logger.warning(f"Errors encountered:")
