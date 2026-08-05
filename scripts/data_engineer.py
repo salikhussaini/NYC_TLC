@@ -114,6 +114,10 @@ def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
             pl.col('pickup_datetime').dt.hour().alias('pickup_hour'),
             pl.col('pickup_datetime').dt.weekday().alias('pickup_day_of_week'),
             pl.col('pickup_datetime').dt.date().alias('pickup_date'),
+        )
+        
+        # Now use the newly created columns
+        df = df.with_columns(
             pl.col('pickup_day_of_week').is_in([5, 6]).cast(pl.Int32).alias('is_weekend'),
             pl.col('pickup_hour').is_in(PEAK_HOURS).cast(pl.Int32).alias('is_peak_hour'),
         )
