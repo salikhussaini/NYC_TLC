@@ -142,12 +142,13 @@ def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
                     .otherwise(0)
                     .alias('trip_speed_mph'),
             )
+            # Manual binning for distance_category
             df = df.with_columns(
-                pl.cut(
-                    pl.col(config['distance_col']),
-                    bins=[0, 2, 5, 10, 100],
-                    labels=['Short', 'Medium', 'Long', 'Very Long']
-                ).alias('distance_category')
+                pl.when(pl.col(config['distance_col']) <= 2).then(pl.lit('Short'))
+                .when(pl.col(config['distance_col']) <= 5).then(pl.lit('Medium'))
+                .when(pl.col(config['distance_col']) <= 10).then(pl.lit('Long'))
+                .otherwise(pl.lit('Very Long'))
+                .alias('distance_category')
             )
         else:
             df = df.with_columns(
