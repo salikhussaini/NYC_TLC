@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 # -----------------------------
 MAX_WORKERS = 4              # Conservative
 REQUESTS_PER_SECOND = 2      # Global limit
-TIMEOUT = 30                 # Reduced from 120 to prevent long hangs
+TIMEOUT = 90                 # Reduced from 120 to prevent long hangs
 MAX_RETRIES = 3              # Reduced from 5 to fail faster
 
 # -----------------------------
