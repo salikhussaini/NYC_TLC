@@ -50,20 +50,21 @@ TAXI_CONFIG = {
     },
     'fhv': {
         'pickup_col': 'pickup_datetime',
-        'dropoff_col': 'dropoff_datetime',
-        'distance_col': 'trip_miles',
+        'dropoff_col': 'dropoff_datetime',  # May not exist in FHV
+        'distance_col': 'trip_miles',  # May not exist in FHV
         'extra_surcharges': [],
         'has_trip_type': False,
+        'is_fhv': True,  # Standard FHV (different from FHVHV)
     }
 }
 
 def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
     """
-    Engineer features for taxi data (yellow, green, or fhvhv).
+    Engineer features for taxi data (yellow, green, fhvhv, or fhv).
     
     Args:
         df: Input dataframe
-        taxi_type: One of 'yellow', 'green', 'fhvhv'
+        taxi_type: One of 'yellow', 'green', 'fhvhv', 'fhv'
     
     Returns:
         DataFrame with engineered features
@@ -79,15 +80,24 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
     config = TAXI_CONFIG[taxi_type]
     
     try:
-        # Validate required columns
-        required_cols = [config['pickup_col'], config['dropoff_col'], config['distance_col']]
+        # For FHV files: only pickup_datetime is required (dropoff/distance may not exist)
+        if taxi_type == 'fhv':
+            required_cols = [config['pickup_col']]
+        else:
+            required_cols = [config['pickup_col'], config['dropoff_col'], config['distance_col']]
+        
         missing_cols = [col for col in required_cols if col not in df.columns]
         if missing_cols:
             raise KeyError(f"Missing required columns: {missing_cols}")
         
         # ===== TEMPORAL FEATURES =====
         df['pickup_datetime'] = pd.to_datetime(df[config['pickup_col']], errors='coerce')
-        df['dropoff_datetime'] = pd.to_datetime(df[config['dropoff_col']], errors='coerce')
+        
+        # Dropoff datetime may not exist for FHV
+        if config['dropoff_col'] in df.columns:
+            df['dropoff_datetime'] = pd.to_datetime(df[config['dropoff_col']], errors='coerce')
+        else:
+            df['dropoff_datetime'] = pd.NaT
         
         df['pickup_hour'] = df['pickup_datetime'].dt.hour
         df['pickup_day_of_week'] = df['pickup_datetime'].dt.dayofweek
@@ -95,19 +105,27 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
         df['is_weekend'] = df['pickup_day_of_week'].isin([5, 6]).astype(int)
         df['is_peak_hour'] = df['pickup_hour'].isin(PEAK_HOURS).astype(int)
 
-        # ===== TRIP DURATION =====
-        df['trip_duration_minutes'] = (df['dropoff_datetime'] - df['pickup_datetime']).dt.total_seconds() / 60
-        df['trip_duration_seconds'] = (df['dropoff_datetime'] - df['pickup_datetime']).dt.total_seconds()
+        # ===== TRIP DURATION (only if dropoff exists) =====
+        if config['dropoff_col'] in df.columns:
+            df['trip_duration_minutes'] = (df['dropoff_datetime'] - df['pickup_datetime']).dt.total_seconds() / 60
+            df['trip_duration_seconds'] = (df['dropoff_datetime'] - df['pickup_datetime']).dt.total_seconds()
+        else:
+            df['trip_duration_minutes'] = np.nan
+            df['trip_duration_seconds'] = np.nan
 
-        # ===== SPEED & DISTANCE METRICS =====
-        df['trip_speed_mph'] = np.where(
-            df['trip_duration_minutes'] > 0,
-            (df[config['distance_col']] / df['trip_duration_minutes']) * 60,
-            0
-        )
-        df['distance_category'] = pd.cut(df[config['distance_col']], 
-                                         bins=[0, 2, 5, 10, 100], 
-                                         labels=['Short', 'Medium', 'Long', 'Very Long'])
+        # ===== SPEED & DISTANCE METRICS (only if distance exists) =====
+        if config['distance_col'] in df.columns:
+            df['trip_speed_mph'] = np.where(
+                df['trip_duration_minutes'] > 0,
+                (df[config['distance_col']] / df['trip_duration_minutes']) * 60,
+                0
+            )
+            df['distance_category'] = pd.cut(df[config['distance_col']], 
+                                             bins=[0, 2, 5, 10, 100], 
+                                             labels=['Short', 'Medium', 'Long', 'Very Long'])
+        else:
+            df['trip_speed_mph'] = np.nan
+            df['distance_category'] = np.nan
 
         # ===== TAXI-TYPE SPECIFIC FEATURES =====
         if taxi_type == 'yellow':
@@ -116,13 +134,16 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
             _engineer_green_features(df)
         elif taxi_type == 'fhvhv':
             _engineer_fhvhv_features(df)
+        elif taxi_type == 'fhv':
+            _engineer_fhv_features(df)
 
         # ===== COMMON FINANCIAL METRICS =====
         _engineer_financial_metrics(df, taxi_type, config)
 
         # ===== LOCATION FEATURES =====
-        df['is_airport_trip'] = ((df['PULocationID'].isin(AIRPORT_LOCATION_IDS)) | 
-                                 (df['DOLocationID'].isin(AIRPORT_LOCATION_IDS))).astype(int)
+        if 'PULocationID' in df.columns and 'DOLocationID' in df.columns:
+            df['is_airport_trip'] = ((df['PULocationID'].isin(AIRPORT_LOCATION_IDS)) | 
+                                     (df['DOLocationID'].isin(AIRPORT_LOCATION_IDS))).astype(int)
 
         # ===== DATA QUALITY FLAGS =====
         _engineer_quality_flags(df, taxi_type, config)
@@ -132,6 +153,15 @@ def engineer_data(df: pd.DataFrame, taxi_type: str) -> pd.DataFrame:
     except Exception as e:
         logger.error(f"Error engineering {taxi_type} data: {str(e)}")
         raise
+
+
+def _engineer_fhv_features(df: pd.DataFrame) -> None:
+    """Engineer standard FHV (non-FHVHV) specific features."""
+    # FHV has minimal supplemental columns
+    # Mainly just pickup/dropoff locations and basic info
+    # Check for dispatching info if it exists
+    if 'on_scene_datetime' in df.columns:
+        df['on_scene_datetime'] = pd.to_datetime(df['on_scene_datetime'], errors='coerce')
 
 
 def _engineer_yellow_features(df: pd.DataFrame) -> None:
@@ -210,6 +240,10 @@ def _engineer_fhvhv_features(df: pd.DataFrame) -> None:
 
 def _engineer_financial_metrics(df: pd.DataFrame, taxi_type: str, config: Dict) -> None:
     """Engineer common financial metrics."""
+    # Skip financial metrics for FHV (likely doesn't have fare/payment data)
+    if taxi_type == 'fhv':
+        return
+    
     if 'fare_amount' not in df.columns:
         return
 
@@ -221,7 +255,7 @@ def _engineer_financial_metrics(df: pd.DataFrame, taxi_type: str, config: Dict) 
             0
         )
     
-    if 'total_amount' in df.columns:
+    if 'total_amount' in df.columns and 'trip_duration_minutes' in df.columns:
         df['cost_per_minute'] = np.where(
             df['trip_duration_minutes'] > 0,
             df['total_amount'] / df['trip_duration_minutes'],
@@ -291,8 +325,11 @@ def _engineer_quality_flags(df: pd.DataFrame, taxi_type: str, config: Dict) -> N
     if config['distance_col'] in df.columns:
         df['zero_distance_flag'] = (df[config['distance_col']] == 0).astype(int)
     
-    df['negative_duration_flag'] = (df['trip_duration_minutes'] < 0).astype(int)
-    df['excessive_speed_flag'] = (df['trip_speed_mph'] > 100).astype(int)
+    if 'trip_duration_minutes' in df.columns and not df['trip_duration_minutes'].isna().all():
+        df['negative_duration_flag'] = (df['trip_duration_minutes'] < 0).astype(int)
+    
+    if 'trip_speed_mph' in df.columns and not df['trip_speed_mph'].isna().all():
+        df['excessive_speed_flag'] = (df['trip_speed_mph'] > 100).astype(int)
     
     if taxi_type == 'fhvhv' and 'request_to_pickup_minutes' in df.columns:
         df['negative_request_response'] = (df['request_to_pickup_minutes'] < 0).astype(int)
@@ -531,18 +568,24 @@ def main(rerun: bool = False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='NYC TLC Data Engineering Pipeline',
+        description='NYC TLC Data Engineering Pipeline (Yellow, Green, FHV, FHVHV)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python data_engineer.py              # Run pipeline (skip if engineered folder exists)
-  python data_engineer.py --rerun      # Reprocess all files (overwrite engineered folder)
+  python data_engineer.py              # Process CSV & Parquet files (skip existing)
+  python data_engineer.py --rerun      # Reprocess all files (overwrite existing)
+
+Supported file types:
+  - yellow_tripdata_*.csv/parquet
+  - green_tripdata_*.csv/parquet
+  - fhv_tripdata_*.csv/parquet
+  - fhvhv_tripdata_*.csv/parquet
         """
     )
     parser.add_argument(
         '--rerun',
         action='store_true',
-        help='Reprocess all files even if engineered folder already exists'
+        help='Reprocess all files even if engineered versions already exist'
     )
     
     args = parser.parse_args()
