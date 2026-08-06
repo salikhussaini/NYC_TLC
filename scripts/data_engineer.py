@@ -539,11 +539,9 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pl
             # Remove .parquet extension for base filename
             base_filename = file_name.replace('.parquet', '')
         
-        logger.info(f"Loaded {file_name} ({len(df)} rows)")
-        
         # Engineer features
         eng_df = engineer_data(df, taxi_type)
-        logger.info(f"Engineered features for {file_name} ({len(eng_df.columns)} columns)")
+        logger.info(f"Processed {file_name}: {len(df)} rows → {len(eng_df.columns)} columns")
         
         # Set output filename based on format
         if output_format == 'parquet':
