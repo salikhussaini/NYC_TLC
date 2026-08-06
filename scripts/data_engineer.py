@@ -492,6 +492,41 @@ def crawl_folder(folder_path: str) -> List[str]:
     return file_list
 
 
+def detect_taxi_type_from_columns(df: pl.DataFrame) -> Optional[str]:
+    """
+    Detect taxi type based on actual columns in the dataframe.
+    Fallback when filename-based detection might be unreliable.
+    
+    Returns:
+        One of 'yellow', 'green', 'fhvhv', 'fhv', or None if unable to detect
+    """
+    cols = set(df.columns)
+    cols_lower = {c.lower() for c in cols}
+    
+    # Yellow: has tpep_* columns
+    if 'tpep_pickup_datetime' in cols_lower or 'tpep_dropoff_datetime' in cols_lower:
+        return 'yellow'
+    
+    # Green: has lpep_* columns
+    if 'lpep_pickup_datetime' in cols_lower or 'lpep_dropoff_datetime' in cols_lower:
+        return 'green'
+    
+    # FHVHV: has hvfhs_license_num or specific FHVHV columns
+    if 'hvfhs_license_num' in cols_lower or 'base_passenger_fare' in cols_lower:
+        return 'fhvhv'
+    
+    # FHV vs FHVHV distinction: FHV has dispatching_base_num but not hvfhs_license_num
+    if 'dispatching_base_num' in cols_lower and 'hvfhs_license_num' not in cols_lower:
+        return 'fhv'
+    
+    # Generic: has pickup_datetime/dropoff_datetime (likely fhvhv or fhv)
+    if 'pickup_datetime' in cols_lower or 'dropoff_datetime' in cols_lower:
+        # Default to fhvhv if can't distinguish
+        return 'fhvhv'
+    
+    return None
+
+
 def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pl.DataFrame, str, str]:
     """
     Read and engineer a taxi data file (CSV or Parquet).
@@ -510,22 +545,6 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pl
     if file_ext not in ['.csv', '.parquet']:
         return False, None, f"Skipping non-CSV/Parquet file: {file_name}", ""
     
-    # Determine taxi type - check in order: 'fhv_' before 'fhvhv' to avoid mismatches
-    taxi_type = None
-    filename_lower = file_path.lower()
-    
-    # Priority order: fhv_ (but not fhvhv), then fhvhv, then yellow, then green
-    if 'fhv_' in filename_lower and 'fhvhv' not in filename_lower:
-        taxi_type = 'fhv'
-    else:
-        for key in ['fhvhv', 'yellow', 'green']:
-            if key in filename_lower:
-                taxi_type = key
-                break
-    
-    if not taxi_type:
-        return False, None, f"Could not determine taxi type for: {file_name}", ""
-    
     try:
         if not os.path.exists(file_path):
             return False, None, f"File not found: {file_path}", ""
@@ -538,6 +557,39 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pl
             df = pl.read_parquet(file_path)
             # Remove .parquet extension for base filename
             base_filename = file_name.replace('.parquet', '')
+        
+        # Determine taxi type: filename first, then column-based fallback
+        taxi_type = None
+        filename_lower = file_path.lower()
+        
+        # Priority order: fhv_ (but not fhvhv), then fhvhv, then yellow, then green
+        if 'fhv_' in filename_lower and 'fhvhv' not in filename_lower:
+            taxi_type = 'fhv'
+        else:
+            for key in ['fhvhv', 'yellow', 'green']:
+                if key in filename_lower:
+                    taxi_type = key
+                    break
+        
+        # If filename-based detection found a type, verify columns match
+        # If not, use column-based detection
+        if taxi_type:
+            config = TAXI_CONFIG[taxi_type]
+            if taxi_type == 'fhv':
+                required_cols = [config['pickup_col']]
+            else:
+                required_cols = [config['pickup_col'], config['dropoff_col'], config['distance_col']]
+            
+            # Check if required columns exist
+            if not all(col in df.columns for col in required_cols):
+                # Filename-based detection failed, try column-based detection
+                taxi_type = detect_taxi_type_from_columns(df)
+        else:
+            # No filename-based match, use column-based detection
+            taxi_type = detect_taxi_type_from_columns(df)
+        
+        if not taxi_type:
+            return False, None, f"Could not determine taxi type for: {file_name} (no matching columns found)", ""
         
         # Engineer features
         eng_df = engineer_data(df, taxi_type)
@@ -567,20 +619,31 @@ def process_and_save_file(args: Tuple) -> Dict:
     """
     file_path, output_format, engineer_folder, rerun, compression = args
     file_name = os.path.basename(file_path)
+    file_ext = os.path.splitext(file_name)[1].lower()
     
-    success, eng_df, message, output_filename = engineer_files(file_path, output_format=output_format)
+    # Determine output filename early to check if it exists
+    if file_ext == '.csv':
+        base_filename = file_name
+    else:  # .parquet
+        base_filename = file_name.replace('.parquet', '')
+    
+    if output_format == 'parquet':
+        output_filename = base_filename + '.parquet'
+    else:  # csv
+        output_filename = base_filename + '.csv'
+    
+    output_path = os.path.join(engineer_folder, output_filename)
+    
+    # Skip if file already exists and rerun is False (avoid expensive engineering)
+    if os.path.exists(output_path) and not rerun:
+        return {'file': file_name, 'success': True, 'status': 'exists'}
+    
+    success, eng_df, message, _ = engineer_files(file_path, output_format=output_format)
     
     result = {'file': file_name, 'success': success, 'message': message}
     
     if not success:
         result['status'] = 'failed' if 'Error' in message else 'skipped'
-        return result
-    
-    output_path = os.path.join(engineer_folder, output_filename)
-    
-    # Skip if file already exists and rerun is False
-    if os.path.exists(output_path) and not rerun:
-        result['status'] = 'exists'
         return result
     
     try:
