@@ -87,7 +87,9 @@ def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
         
         missing_cols = [col for col in required_cols if col not in df.columns]
         if missing_cols:
-            raise KeyError(f"Missing required columns: {missing_cols}")
+            actual_cols = [col for col in df.columns if 'pickup' in col.lower() or 'dropoff' in col.lower() or 'datetime' in col.lower()]
+            error_msg = f"Missing required columns: {missing_cols}. Available datetime-like columns: {actual_cols}. All columns: {df.columns}"
+            raise KeyError(error_msg)
         
         # ===== TEMPORAL FEATURES =====
         # Step 1: Create base datetime columns
