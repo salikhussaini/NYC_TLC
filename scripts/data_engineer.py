@@ -537,8 +537,11 @@ def engineer_files(file_path: str, output_format: str = 'csv') -> Tuple[bool, pl
             # Remove .parquet extension for base filename
             base_filename = file_name.replace('.parquet', '')
         
+        logger.info(f"Loaded {file_name} ({len(df)} rows)")
+        
         # Engineer features
         eng_df = engineer_data(df, taxi_type)
+        logger.info(f"Engineered features for {file_name} ({len(eng_df.columns)} columns)")
         
         # Set output filename based on format
         if output_format == 'parquet':
@@ -655,6 +658,7 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
             logger.info(f"Saved: {result['file']} ({size:.2f} MB)")
         elif status == 'exists':
             stats['already_exists'] += 1
+            logger.info(f"Exists: {result['file']} (skipped)")
         elif status == 'error':
             stats['failed'] += 1
             error_msg = f"Failed to save {result['file']}: {result.get('error', 'Unknown error')}"
@@ -662,9 +666,11 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
             logger.error(error_msg)
         elif status == 'skipped':
             stats['skipped'] += 1
+            logger.warning(f"Skipped: {result['file']} (unsupported format)")
         elif status == 'failed':
             stats['failed'] += 1
             stats['errors'].append(result.get('message', 'Processing failed'))
+            logger.error(result.get('message', 'Processing failed'))
     
     # Summary
     logger.info(f"\n===== PROCESSING SUMMARY =====")
