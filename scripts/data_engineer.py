@@ -90,7 +90,7 @@ def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
             raise KeyError(f"Missing required columns: {missing_cols}")
         
         # ===== TEMPORAL FEATURES =====
-        # Prepare datetime columns in a single batch
+        # Step 1: Create base datetime columns
         temporal_cols = {}
         
         # Handle pickup datetime
@@ -110,44 +110,55 @@ def engineer_data(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
         else:
             temporal_cols['dropoff_datetime'] = pl.lit(None).cast(pl.Datetime('us'))
         
-        # Add derived temporal features in single batch
-        temporal_cols['pickup_hour'] = pl.col('pickup_datetime').dt.hour()
-        temporal_cols['pickup_day_of_week'] = pl.col('pickup_datetime').dt.weekday()
-        temporal_cols['pickup_date'] = pl.col('pickup_datetime').dt.date()
-        temporal_cols['is_weekend'] = pl.col('pickup_day_of_week').is_in([5, 6]).cast(pl.Int32)
-        temporal_cols['is_peak_hour'] = pl.col('pickup_hour').is_in(PEAK_HOURS).cast(pl.Int32)
-        
         df = df.with_columns(**temporal_cols)
+        
+        # Step 2: Create derived temporal features (now that base columns exist)
+        derived_temporal = {
+            'pickup_hour': pl.col('pickup_datetime').dt.hour(),
+            'pickup_day_of_week': pl.col('pickup_datetime').dt.weekday(),
+            'pickup_date': pl.col('pickup_datetime').dt.date(),
+        }
+        df = df.with_columns(**derived_temporal)
+        
+        # Step 3: Create flags that depend on derived features
+        flag_cols = {
+            'is_weekend': pl.col('pickup_day_of_week').is_in([5, 6]).cast(pl.Int32),
+            'is_peak_hour': pl.col('pickup_hour').is_in(PEAK_HOURS).cast(pl.Int32),
+        }
+        df = df.with_columns(**flag_cols)
 
         # ===== TRIP DURATION & SPEED/DISTANCE METRICS =====
-        # Batch calculate all derived metrics
-        derived_metrics = {}
+        # Step 1: Calculate trip duration first
+        duration_metrics = {}
         
-        # Trip duration
         if config['dropoff_col'] in df.columns:
-            derived_metrics['trip_duration_minutes'] = (pl.col('dropoff_datetime') - pl.col('pickup_datetime')).dt.total_seconds() / 60
-            derived_metrics['trip_duration_seconds'] = (pl.col('dropoff_datetime') - pl.col('pickup_datetime')).dt.total_seconds()
+            duration_metrics['trip_duration_minutes'] = (pl.col('dropoff_datetime') - pl.col('pickup_datetime')).dt.total_seconds() / 60
+            duration_metrics['trip_duration_seconds'] = (pl.col('dropoff_datetime') - pl.col('pickup_datetime')).dt.total_seconds()
         else:
-            derived_metrics['trip_duration_minutes'] = pl.lit(None).cast(pl.Float64)
-            derived_metrics['trip_duration_seconds'] = pl.lit(None).cast(pl.Float64)
+            duration_metrics['trip_duration_minutes'] = pl.lit(None).cast(pl.Float64)
+            duration_metrics['trip_duration_seconds'] = pl.lit(None).cast(pl.Float64)
         
-        # Speed and distance metrics
+        df = df.with_columns(**duration_metrics)
+        
+        # Step 2: Calculate speed and distance metrics that depend on trip_duration_minutes
+        speed_metrics = {}
+        
         if config['distance_col'] in df.columns:
-            derived_metrics['trip_speed_mph'] = pl.when(pl.col('trip_duration_minutes') > 0).then(
+            speed_metrics['trip_speed_mph'] = pl.when(pl.col('trip_duration_minutes') > 0).then(
                 (pl.col(config['distance_col']) / pl.col('trip_duration_minutes')) * 60
             ).otherwise(0)
             
-            derived_metrics['distance_category'] = (
+            speed_metrics['distance_category'] = (
                 pl.when(pl.col(config['distance_col']) <= 2).then(pl.lit('Short'))
                 .when(pl.col(config['distance_col']) <= 5).then(pl.lit('Medium'))
                 .when(pl.col(config['distance_col']) <= 10).then(pl.lit('Long'))
                 .otherwise(pl.lit('Very Long'))
             )
         else:
-            derived_metrics['trip_speed_mph'] = pl.lit(None).cast(pl.Float64)
-            derived_metrics['distance_category'] = pl.lit(None).cast(pl.Utf8)
+            speed_metrics['trip_speed_mph'] = pl.lit(None).cast(pl.Float64)
+            speed_metrics['distance_category'] = pl.lit(None).cast(pl.Utf8)
         
-        df = df.with_columns(**derived_metrics)
+        df = df.with_columns(**speed_metrics)
 
         # ===== TAXI-TYPE SPECIFIC FEATURES =====
         if taxi_type == 'yellow':
@@ -240,27 +251,50 @@ def _engineer_fhvhv_features(df: pl.DataFrame) -> pl.DataFrame:
         cols['request_to_pickup_minutes'] = (pl.col('pickup_datetime') - pl.col('request_datetime')).dt.total_seconds() / 60
         cols['request_to_onscene_minutes'] = (pl.col('on_scene_datetime') - pl.col('request_datetime')).dt.total_seconds() / 60
 
-    # Driver performance metrics
-    if 'driver_pay' in df.columns and 'trip_miles' in df.columns:
-        driver_earnings = pl.col('driver_pay').fill_null(0)
-        cols['driver_earnings'] = driver_earnings
-        cols['driver_earnings_per_mile'] = pl.when(pl.col('trip_miles') > 0).then(
-            driver_earnings / pl.col('trip_miles')
+    if cols:
+        df = df.with_columns(**cols)
+    
+    # Driver earnings (step 1)
+    if 'driver_pay' in df.columns:
+        df = df.with_columns(
+            pl.col('driver_pay').fill_null(0).alias('driver_earnings')
+        )
+    
+    # Driver earnings per mile/minute (step 2, depends on driver_earnings)
+    driver_cols = {}
+    if 'driver_earnings' in df.columns and 'trip_miles' in df.columns:
+        driver_cols['driver_earnings_per_mile'] = pl.when(pl.col('trip_miles') > 0).then(
+            pl.col('driver_earnings') / pl.col('trip_miles')
         ).otherwise(0)
-        cols['driver_earnings_per_minute'] = pl.when(pl.col('trip_duration_minutes') > 0).then(
-            driver_earnings / pl.col('trip_duration_minutes')
+    
+    if 'driver_earnings' in df.columns and 'trip_duration_minutes' in df.columns:
+        driver_cols['driver_earnings_per_minute'] = pl.when(pl.col('trip_duration_minutes') > 0).then(
+            pl.col('driver_earnings') / pl.col('trip_duration_minutes')
         ).otherwise(0)
-
-    # Platform commission
-    if 'base_passenger_fare' in df.columns and 'driver_pay' in df.columns and 'total_passenger_cost' in df.columns:
-        cols['platform_commission'] = pl.col('total_passenger_cost') - pl.col('driver_earnings')
-        cols['commission_percentage'] = pl.when(pl.col('total_passenger_cost') > 0).then(
-            (pl.col('platform_commission') / pl.col('total_passenger_cost')) * 100
-        ).otherwise(0)
+    
+    if driver_cols:
+        df = df.with_columns(**driver_cols)
+    
+    # Platform commission (step 3)
+    commission_cols = {}
+    if 'base_passenger_fare' in df.columns and 'driver_earnings' in df.columns and 'total_passenger_cost' in df.columns:
+        commission_cols['platform_commission'] = pl.col('total_passenger_cost') - pl.col('driver_earnings')
+    
+    if commission_cols:
+        df = df.with_columns(**commission_cols)
+    
+    # Commission percentage (step 4, depends on platform_commission)
+    if 'platform_commission' in df.columns and 'total_passenger_cost' in df.columns:
+        df = df.with_columns(
+            pl.when(pl.col('total_passenger_cost') > 0).then(
+                (pl.col('platform_commission') / pl.col('total_passenger_cost')) * 100
+            ).otherwise(0).alias('commission_percentage')
+        )
 
     # License type mapping
+    license_cols = {}
     if 'hvfhs_license_num' in df.columns:
-        cols['license_type'] = (
+        license_cols['license_type'] = (
             pl.when(pl.col('hvfhs_license_num') == 'HV0003').then(pl.lit('Uber'))
             .when(pl.col('hvfhs_license_num') == 'HV0005').then(pl.lit('Lyft'))
             .when(pl.col('hvfhs_license_num') == 'HV0004').then(pl.lit('Via'))
@@ -268,11 +302,11 @@ def _engineer_fhvhv_features(df: pl.DataFrame) -> pl.DataFrame:
             .when(pl.col('hvfhs_license_num') == 'HV0001').then(pl.lit('Uber'))
             .otherwise(pl.lit('Other'))
         )
+    
+    if license_cols:
+        df = df.with_columns(**license_cols)
 
-    if cols:
-        df = df.with_columns(**cols)
-
-    # Special service flags - batch these separately
+    # Special service flags
     flag_cols_dict = {}
     flag_cols = ['shared_request_flag', 'shared_match_flag', 'access_a_ride_flag', 
                  'wav_request_flag', 'wav_match_flag']
@@ -281,14 +315,18 @@ def _engineer_fhvhv_features(df: pl.DataFrame) -> pl.DataFrame:
             new_col = col.replace('_flag', '')
             flag_cols_dict[f'is_{new_col}'] = (pl.col(col) == 'Y').cast(pl.Int32)
     
-    # Add accessibility flag
-    if 'is_wav_match' in flag_cols_dict or 'is_wav_match' in df.columns:
-        flag_cols_dict['is_accessibility_trip'] = pl.col('is_wav_match').cast(pl.Int32) if 'is_wav_match' in flag_cols_dict else pl.lit(0).cast(pl.Int32)
-    else:
-        flag_cols_dict['is_accessibility_trip'] = pl.lit(0).cast(pl.Int32)
-    
     if flag_cols_dict:
         df = df.with_columns(**flag_cols_dict)
+
+    # Add accessibility flag (after is_wav_match is created)
+    if 'is_wav_match' in df.columns:
+        df = df.with_columns(
+            pl.col('is_wav_match').cast(pl.Int32).alias('is_accessibility_trip')
+        )
+    else:
+        df = df.with_columns(
+            pl.lit(0).cast(pl.Int32).alias('is_accessibility_trip')
+        )
 
     return df
 
@@ -374,14 +412,16 @@ def _calculate_surcharges(df: pl.DataFrame, taxi_type: str) -> pl.DataFrame:
             pl.col(col).fill_null(0) for col in all_surcharge_cols
         )
         
-        cols = {'total_surcharges': total_surcharges_expr}
+        # Step 1: Create total_surcharges
+        df = df.with_columns(total_surcharges_expr.alias('total_surcharges'))
         
+        # Step 2: Create surcharge_percentage (now that total_surcharges exists)
         if 'fare_amount' in df.columns:
-            cols['surcharge_percentage'] = pl.when(pl.col('fare_amount') > 0).then(
-                (pl.col('total_surcharges') / pl.col('fare_amount')) * 100
-            ).otherwise(0)
-        
-        df = df.with_columns(**cols)
+            df = df.with_columns(
+                pl.when(pl.col('fare_amount') > 0).then(
+                    (pl.col('total_surcharges') / pl.col('fare_amount')) * 100
+                ).otherwise(0).alias('surcharge_percentage')
+            )
     
     return df
 
