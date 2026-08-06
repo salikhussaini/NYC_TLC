@@ -519,10 +519,14 @@ def detect_taxi_type_from_columns(df: pl.DataFrame) -> Optional[str]:
     if 'dispatching_base_num' in cols_lower and 'hvfhs_license_num' not in cols_lower:
         return 'fhv'
     
-    # Generic: has pickup_datetime/dropoff_datetime (likely fhvhv or fhv)
+    # Generic: has pickup_datetime/dropoff_datetime
     if 'pickup_datetime' in cols_lower or 'dropoff_datetime' in cols_lower:
-        # Default to fhvhv if can't distinguish
-        return 'fhvhv'
+        # Prefer FHV if trip_miles is missing (FHV data can lack distance info)
+        # Use FHVHV if trip_miles is present
+        if 'trip_miles' in cols_lower:
+            return 'fhvhv'
+        else:
+            return 'fhv'
     
     return None
 
