@@ -4,6 +4,7 @@ import logging
 import argparse
 from typing import Dict, List, Tuple, Optional
 from multiprocessing import Pool, cpu_count
+import time
 
 # Configure logging
 logging.basicConfig(
@@ -715,8 +716,12 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
     with Pool(num_workers) as pool:
         results = pool.map(process_and_save_file, process_args)
     
-    # Collect statistics
-    for result in results:
+    # Collect statistics with progress logging every 20 minutes
+    start_time = time.time()
+    last_progress_log = start_time
+    progress_interval = 1200  # 20 minutes in seconds
+    
+    for idx, result in enumerate(results, 1):
         status = result.get('status', 'unknown')
         
         if status == 'saved':
@@ -738,6 +743,25 @@ def engineer_all(file_list: List[str], engineer_folder: str, rerun: bool = False
             stats['failed'] += 1
             stats['errors'].append(result.get('message', 'Processing failed'))
             logger.error(result.get('message', 'Processing failed'))
+        
+        # Log progress every 20 minutes
+        current_time = time.time()
+        if current_time - last_progress_log >= progress_interval:
+            elapsed = current_time - start_time
+            processed = idx
+            percentage = (processed / len(results)) * 100
+            rate = processed / (elapsed / 60)  # files per minute
+            remaining_files = len(results) - processed
+            eta_minutes = remaining_files / rate if rate > 0 else 0
+            
+            logger.info(f"===== PROGRESS UPDATE =====")
+            logger.info(f"Processed: {processed}/{len(results)} files ({percentage:.1f}%)")
+            logger.info(f"Rate: {rate:.2f} files/minute")
+            logger.info(f"Elapsed: {elapsed/60:.1f} minutes")
+            logger.info(f"ETA: {eta_minutes:.1f} minutes remaining")
+            logger.info(f"Status - Successful: {stats['successful']}, Exists: {stats['already_exists']}, Failed: {stats['failed']}, Skipped: {stats['skipped']}")
+            
+            last_progress_log = current_time
     
     # Summary
     logger.info(f"\n===== PROCESSING SUMMARY =====")
